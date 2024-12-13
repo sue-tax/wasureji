@@ -18,8 +18,10 @@ import sys
 作成予定の他のクライアント
 一括IN入力
 一括OUT入力
-検索
-SQL検索
+ユーティリティ
+　KILL
+　検索
+　SQL検索
 '''
 
 '''
@@ -61,6 +63,7 @@ def wasureji_input(file_name):
     list_in_origin = seq.send_ask_in_origin()
     list_in_by = seq.send_ask_in_by()
     list_out_delivery = seq.send_ask_out_delivery()
+    print(list_out_delivery)
     list_out_by = seq.send_ask_out_by()
     
     d_today = datetime.date.today()
@@ -175,7 +178,7 @@ def wasureji_input(file_name):
 
 if __name__ == '__main__':
     file_name = str(sys.argv[1])
-    # file_name = str("c:/dfafafa/adfaafafa/afafafa/abc.pdf")
+    # file_name = str("c:/dfafafa/adfaafafa/afafafa/abcd.pdf")
     wasureji_input(file_name)
     # print("")
     sys.exit(0)

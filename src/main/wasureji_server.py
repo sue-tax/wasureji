@@ -19,6 +19,10 @@ import sys
 
 server = None
 
+
+# TODO エラーハンドル
+# port open error
+
 # TODO ファイル監視
 
 def sig_handler(signum, frame) -> None:

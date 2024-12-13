@@ -48,19 +48,29 @@ class Sequence(object):
             list_doc = database.select_document()
             if len(list_doc) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_doc[0]) + r'"]'
+            list_ = []
+            for atom in list_doc:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
+            # ret_msg = r'["' + r',"'.join(list_doc[0]) + r'"]'
             return ret_msg
         if str_msg.startswith(ASK_CUST):
             list_cust = database.select_customer()
             if len(list_cust) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_cust[0]) + r'"]'
+            list_ = []
+            for atom in list_cust:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
         if str_msg.startswith(ASK_SECT):
             list_sect = database.select_section()
             if len(list_sect) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_sect[0]) + r'"]'
+            list_ = []
+            for atom in list_sect:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
         if str_msg.startswith(ASK_IN):
@@ -91,13 +101,19 @@ class Sequence(object):
             list_origin = database.select_in_origin()
             if len(list_origin) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_origin[0]) + r'"]'
+            list_ = []
+            for atom in list_origin:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
         if str_msg.startswith(ASK_IN_BY):
             list_by = database.select_in_by()
             if len(list_by) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_by[0]) + r'"]'
+            list_ = []
+            for atom in list_by:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
         if str_msg.startswith(ASK_OUT):
@@ -126,15 +142,23 @@ class Sequence(object):
 
         if str_msg.startswith(ASK_OUT_DELIV):
             list_delivery = database.select_out_delivery()
+            # print(list_delivery)
             if len(list_delivery) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_delivery[0]) + r'"]'
+            list_ = []
+            for atom in list_delivery:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
+            # print(ret_msg)
             return ret_msg
         if str_msg.startswith(ASK_OUT_BY):
             list_by = database.select_out_by()
             if len(list_by) == 0:
                 return("[]")
-            ret_msg = r'["' + r',"'.join(list_by[0]) + r'"]'
+            list_ = []
+            for atom in list_by:
+                list_.append(atom[0])
+            ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
         return ("??")
@@ -322,7 +346,7 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
+            # print(list_atom)
             return list_atom
 
     def send_ask_out_by(self):

@@ -11,8 +11,6 @@ import socketserver
 from struct import pack,unpack
 
 class WasurejiHandler(socketserver.BaseRequestHandler):
-    """サーバに届いたリクエストを処理するクラス."""
-    
     server = None
     sequence = None
 
