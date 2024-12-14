@@ -12,6 +12,11 @@ class Sequence(object):
         self.port = port
 
     def listen(self, str_msg, database):
+        if str_msg.startswith(SQL):
+            str_result = database.execute_sql(
+                    str_msg[len(SQL):])
+            return str_result
+         
         if str_msg.startswith(ASK_FILE):
             list_base = database.select_file(
                     str_msg[len(ASK_FILE):])
@@ -168,6 +173,16 @@ class Sequence(object):
 
         return ("??")
 
+    def send_kill(self):
+        client_ = client()
+        _str_rcv = client_.send(self.port, KILL)
+    
+    def send_execute_sql(self, str_sql):
+        client_ = client()
+        str_send = "{}{}".format(SQL, str_sql)
+        str_rcv = client_.send(self.port, str_send)
+        return str_rcv
+        
     def send_ask_file(self, str_file_name):
         client_ = client()
         str_send = "{}{}".format(ASK_FILE, str_file_name)

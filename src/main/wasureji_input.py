@@ -17,8 +17,6 @@ import sys
 
 '''
 作成予定の他のクライアント
-一括IN入力
-一括OUT入力
 ユーティリティ
 　KILL
 　検索
@@ -46,7 +44,6 @@ class wasureji_input(object):
         [eg.Label("誰から"), eg.Combo("", key="-input_origin-")],
         [eg.Label("何で　"), eg.Combo("", key="-input_by-")],
         
-        # 将来的には複数
         [eg.Label("出力"), 
                 eg.Button("追加", key="-output_append-"),
                 eg.Button("変更", key="-output_change-"),

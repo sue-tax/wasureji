@@ -4,6 +4,8 @@ Created on 2024/12/09
 @author: sue-t
 '''
 
+from main import KILL
+
 import socket
 from struct import pack, unpack
 from com import HEADER_SIZE
@@ -23,6 +25,8 @@ class client(object):
             data_msg = bytes(str_msg, 'utf-8')
             sock.sendall(pack('!I', len(data_msg)))
             sock.sendall(data_msg)
+            if str_msg == KILL:
+                return None
             received_header = sock.recv(HEADER_SIZE)
             data_size = unpack('!I', received_header)[0]
             # print(data_size)
