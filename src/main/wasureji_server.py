@@ -30,18 +30,11 @@ def sig_handler(signum, frame) -> None:
     sys.exit(1)
 
 class wasureji_server(object):
-    '''
-    classdocs
-    '''
-
-
     def __init__(self, database_name, port):
         self.database_name = database_name
         self.port = port
 
     def start(self):
-        # print(self.database_name)
-        # self.database = database.WasurejiDB(self.database_name)
         self.database = WasurejiDB(self.database_name)
         signal.signal(signal.SIGTERM, sig_handler)
         signal.signal(signal.SIGINT, sig_handler)
@@ -59,8 +52,6 @@ class wasureji_server(object):
         ret_msg = WasurejiHandler.sequence.listen(
                 str_msg, self.database)
         return ret_msg
-            
-            
 
 if __name__ == '__main__':
     server = wasureji_server(DATABASE, PORT)

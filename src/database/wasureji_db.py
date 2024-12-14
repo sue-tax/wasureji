@@ -202,11 +202,24 @@ class WasurejiDB(object):
         return "ok"
 
     def replace_output(self, file, date, delivery, by):
+        # 複数指定では、使わない
         str_sql = r'UPDATE output SET ' \
                 'date = "{}", delivery="{}", ' \
                 'by = "{}"' \
                 ' WHERE file = "{}"'. \
                 format(date, delivery, by, file)
+        # print(str_sql)
+        try:
+            self.cur.execute(str_sql)
+            self.conn.commit()
+        except sqlite3.Error as e:
+            return f"error:{e}"
+        return "ok"
+
+    def delete_output(self, file):
+        str_sql = r'DELETE output ' \
+                ' WHERE file = "{}"'. \
+                format(file)
         # print(str_sql)
         try:
             self.cur.execute(str_sql)

@@ -9,9 +9,6 @@ from com.client import client
 
 class Sequence(object):
     def __init__(self, port):
-        '''
-        Constructor
-        '''
         self.port = port
 
     def listen(self, str_msg, database):
@@ -121,9 +118,13 @@ class Sequence(object):
                     str_msg[len(ASK_OUT):])
             if len(list_out) == 0:
                 return("[]")
-            ret_msg = r'["{}","{}","{}"]'. \
-                    format(list_out[0][1],
-                           list_out[0][2], list_out[0][3])
+            ret_msg = r'['
+            for list_ in list_out:
+                ret_msg += r'["{}","{}","{}"];'. \
+                        format(list_[1],
+                               list_[2], list_[3])
+            ret_msg = ret_msg[:-1] + ']'
+            # [["..","..", ".."];[ ... ]; ... ]
             return ret_msg
         if str_msg.startswith(INS_OUT):
             list_str = str_msg[len(INS_OUT):].split(',')
@@ -138,6 +139,10 @@ class Sequence(object):
                     list_str[1][1:-1],
                     list_str[2][1:-1],
                     list_str[3][1:-1])
+            return str_msg
+        if str_msg.startswith(DEL_OUT):
+            list_out = database.delete_output(
+                    str_msg[len(DEL_OUT):])
             return str_msg
 
         if str_msg.startswith(ASK_OUT_DELIV):
@@ -210,7 +215,6 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
             return list_atom
 
     def send_ask_customer(self):
@@ -224,7 +228,6 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
             return list_atom
 
     def send_ask_section(self):
@@ -238,7 +241,6 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
             return list_atom
 
 
@@ -246,7 +248,6 @@ class Sequence(object):
         client_ = client()
         str_send = "{}{}".format(ASK_IN, str_file_name)
         str_rcv = client_.send(self.port, str_send)
-        print(str_rcv)
         if str_rcv == "[]":
             return None
         else:
@@ -285,7 +286,6 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
             return list_atom
 
     def send_ask_in_by(self):
@@ -299,7 +299,6 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
             return list_atom
 
 
@@ -307,14 +306,17 @@ class Sequence(object):
         client_ = client()
         str_send = "{}{}".format(ASK_OUT, str_file_name)
         str_rcv = client_.send(self.port, str_send)
-        print(str_rcv)
         if str_rcv == "[]":
             return None
         else:
-            list_str = str_rcv[1:-1].split(',')
-            return (list_str[0][1:-1],
-                    list_str[1][1:-1],
-                    list_str[2][1:-1])
+            list_line = str_rcv[1:-1].split(';')
+            list_rcv = []
+            for list_ in list_line:
+                atom_ = list_[1:-1].split(',')
+                list_rcv.append([ atom_[0][1:-1],
+                        atom_[1][1:-1],
+                        atom_[2][1:-1] ])
+            return list_rcv
 
     def send_insert_out(self, str_file_name,
             str_date, str_deliv, str_by):
@@ -325,8 +327,16 @@ class Sequence(object):
         str_rcv = client_.send(self.port, str_send)
         return str_rcv
 
+    def send_delete_out(self, str_file_name):
+        # str_file_nameの全てのoutを削除する
+        client_ = client()
+        str_send = "{}{}".format(DEL_OUT, str_file_name)
+        str_rcv = client_.send(self.port, str_send)
+        return str_rcv
+
     def send_replace_out(self, str_file_name,
             str_date, str_deliv, str_by):
+        # 複数指定では、使用しない？
         client_ = client()
         str_send = r'{}"{}","{}","{}","{}"'. \
                 format(REP_OUT, str_file_name,
@@ -360,5 +370,4 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
-            print(list_atom)
             return list_atom

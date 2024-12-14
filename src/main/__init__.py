@@ -1,4 +1,4 @@
-__VERSION__ = '0.01'
+__VERSION__ = '0.03'
 
 PORT = 50054
 
@@ -23,7 +23,7 @@ DEL_IN   = "in  <"
 ASK_OUT  = "out ?"
 INS_OUT  = "out >"
 REP_OUT  = "out $"
-DEL_OUT  = "out <"  # 項目　全指定
+DEL_OUT  = "out <"  # ファイル指定　~~項目　全指定~~
 
 ASK_IN_ORIGIN = "ino ?"
 ASK_IN_BY     = "inb ?"

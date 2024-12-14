@@ -17,7 +17,7 @@ class WasurejiHandler(socketserver.BaseRequestHandler):
     def handle(self) -> None:
         _header = self.request.recv(HEADER_SIZE)
         data_size = unpack('!I', _header)[0]
-        print(data_size)
+        # print(data_size)
         data_rcv = self.request.recv(data_size)
         # print(data_rcv)
         str_rcv = data_rcv.decode(encoding='utf-8')
