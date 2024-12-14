@@ -1,10 +1,11 @@
-__VERSION__ = '0.03'
+__VERSION__ = '0.04'
 
 PORT = 50054
 
 DATABASE = "wasureji.db"
 
 KILL     = "kill"
+SQL      = "sql :"
 
 ASK_FILE = "file?"
 INS_FILE = "file>"
