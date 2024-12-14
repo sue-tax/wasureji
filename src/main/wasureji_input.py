@@ -385,7 +385,7 @@ class wasureji_input(object):
                             self.window["-input_by-"].get())
                 # TODO outも、ここでDB処理
                 break
-            if event == "-cancel" or event == "WINDOW_CLOSED":
+            if event == "-cancel-" or event == "WINDOW_CLOSED":
                 answer = eg.confirm(
                         "登録せずに終了して良いですか？",
                         "")
