@@ -1,4 +1,4 @@
-__VERSION__ = '0.04'
+__VERSION__ = '0.05'
 
 PORT = 50054
 
@@ -6,6 +6,8 @@ DATABASE = "wasureji.db"
 
 KILL     = "kill"
 SQL      = "sql :"
+COMMIT   = "commit"
+ROLLBACK = "rollback"
 
 ASK_FILE = "file?"
 INS_FILE = "file>"

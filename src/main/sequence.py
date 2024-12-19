@@ -17,6 +17,14 @@ class Sequence(object):
                     str_msg[len(SQL):])
             return str_result
          
+        if str_msg.startswith(COMMIT):
+            str_result = database.commit()
+            return str_result
+
+        if str_msg.startswith(ROLLBACK):
+            str_result = database.rollback()
+            return str_result
+         
         if str_msg.startswith(ASK_FILE):
             list_base = database.select_file(
                     str_msg[len(ASK_FILE):])
@@ -180,6 +188,18 @@ class Sequence(object):
     def send_execute_sql(self, str_sql):
         client_ = client()
         str_send = "{}{}".format(SQL, str_sql)
+        str_rcv = client_.send(self.port, str_send)
+        return str_rcv
+        
+    def send_commit(self):
+        client_ = client()
+        str_send = "{}".format(COMMIT)
+        str_rcv = client_.send(self.port, str_send)
+        return str_rcv
+
+    def send_rollback(self):
+        client_ = client()
+        str_send = "{}".format(ROLLBACK)
         str_rcv = client_.send(self.port, str_send)
         return str_rcv
         

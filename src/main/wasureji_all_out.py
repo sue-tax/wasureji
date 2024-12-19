@@ -51,6 +51,11 @@ class wasureji_all_out(object):
                 str_delivery = self.window["-output_delivery-"].get()
                 str_by = self.window["-output_by-"].get()
                 for str_file_name in list_file_name:
+                    rcv = self.seq.send_ask_file(str_file_name)
+                    if rcv == None:
+                        self.seq.send_insert_file(
+                                str_file_name,
+                                "", "","", "", "")
                     # outは複数設定可能なので、常にinsert
                     self.seq.send_insert_out(str_file_name,
                             str_date, str_delivery, str_by)

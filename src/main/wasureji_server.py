@@ -16,12 +16,10 @@ from com.server import WasurejiHandler
 
 import signal
 import sys
+import TkEasyGUI
 
 server = None
 
-
-# TODO エラーハンドル
-# port open error
 
 # TODO ファイル監視
 
@@ -40,6 +38,9 @@ class wasureji_server(object):
         signal.signal(signal.SIGINT, sig_handler)
         self.database.create_table()
         WasurejiHandler.sequence = Sequence(self.port)
+        TkEasyGUI.popup_auto_close(
+                "wasureji_server 起動しました",
+                "Information")
         WasurejiHandler.start_server(self.port, self)
     
     def term(self):
@@ -48,7 +49,7 @@ class wasureji_server(object):
     def recv(self, str_msg):
         if str_msg.startswith(KILL):
             self.term()
-            exit(0)
+            sys.exit(0)
         ret_msg = WasurejiHandler.sequence.listen(
                 str_msg, self.database)
         return ret_msg

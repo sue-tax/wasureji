@@ -39,12 +39,12 @@ class wasureji_input(object):
         [eg.Label("顧客名"), eg.Combo([], key='-customer-')],
         [eg.Label("区分名"), eg.Combo([], key='-section-')],
     
-        [eg.Label("入力")],
+        [eg.Label("受取り")],  # "入力")],
         [eg.Label("いつ　"), eg.Combo("", key="-input_date-")],
         [eg.Label("誰から"), eg.Combo("", key="-input_origin-")],
         [eg.Label("何で　"), eg.Combo("", key="-input_by-")],
         
-        [eg.Label("出力"), 
+        [eg.Label("引渡し"),   # 出力"), 
                 eg.Button("追加", key="-output_append-"),
                 eg.Button("変更", key="-output_change-"),
                 eg.Button("中止", key="-output_abort-"),
@@ -252,7 +252,7 @@ class wasureji_input(object):
         set_in_by = list_in[2]
         
         self.list_out = self.seq.send_ask_out(file_name)
-        print(self.list_out)
+        # print(self.list_out)
         # flag_exist_out = True
         if self.list_out == None:
             # flag_exist_out = False
@@ -305,14 +305,13 @@ class wasureji_input(object):
         self.window["-output_by-"].set_readonly(True)
         self.window["-output_by-"].set_disabled(True)
 
-        self.window["-output_date-"].set_readonly(False)
-        self.window["-output_date-"].set_disabled(False)
-        self.window["-output_delivery-"].set_readonly(False)
-        self.window["-output_delivery-"].set_disabled(False)
-        self.window["-output_by-"].set_readonly(False)
-        self.window["-output_by-"].set_disabled(False)
+        # self.window["-output_date-"].set_readonly(False)
+        # self.window["-output_date-"].set_disabled(False)
+        # self.window["-output_delivery-"].set_readonly(False)
+        # self.window["-output_delivery-"].set_disabled(False)
+        # self.window["-output_by-"].set_readonly(False)
+        # self.window["-output_by-"].set_disabled(False)
         self.window["-output_index-"].set_text(str(self.out_index))
-
         self.window["-output_append-"].set_disabled(False)
         self.window["-output_change-"].set_disabled(False)
         self.window["-output_abort-"].set_disabled(True)
@@ -325,6 +324,7 @@ class wasureji_input(object):
             self.window["-output_right-"].set_disabled(True)
         else:
             self.window["-output_right-"].set_disabled(False)
+
         self.window["-cancel-"].set_disabled(False)
         self.window["-ok-"].set_disabled(False)
       

@@ -20,23 +20,22 @@ class client(object):
     def send(self, port, str_msg):
         with socket.socket(socket.AF_INET,
                 socket.SOCK_STREAM) as sock:
-            sock.connect((self.server_ip, port))
-
-            data_msg = bytes(str_msg, 'utf-8')
-            sock.sendall(pack('!I', len(data_msg)))
-            sock.sendall(data_msg)
-            if str_msg == KILL:
-                return None
-            received_header = sock.recv(HEADER_SIZE)
-            data_size = unpack('!I', received_header)[0]
-            # print(data_size)
-            received = sock.recv(data_size)
-        # print("Sent:     {}".format(str_msg))
-        # print("Received: {}".format(received.decode()))
+            try:
+                sock.connect((self.server_ip, port))
+                data_msg = bytes(str_msg, 'utf-8')
+                sock.sendall(pack('!I', len(data_msg)))
+                sock.sendall(data_msg)
+                if str_msg == KILL:
+                    return None
+                received_header = sock.recv(HEADER_SIZE)
+                data_size = unpack('!I', received_header)[0]
+                # print(data_size)
+                received = sock.recv(data_size)
+            except Exception as e:
+                return f"error_socket:{e}"
+            finally:
+                sock.close()
         return received.decode(encoding='utf-8')
-       
-
-
 
 if __name__ == '__main__':
     pass

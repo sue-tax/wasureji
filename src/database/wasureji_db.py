@@ -39,6 +39,48 @@ class WasurejiDB(object):
                 'by STRING)')
         self.conn.commit()
 
+    def execute_sql(self, str_sql):
+        try:
+            self.cur.execute(str_sql)
+        except sqlite3.Error as e:
+            return f"{e}"
+        list_ = self.cur.fetchall()
+        print(list_)
+        # str_result = str(list_)
+        str_result = ""
+        if type(list_) is list:
+            str_result += "[ \n"
+            for atom_ in list_:
+                # print(atom_)
+                if type(atom_) is tuple:
+                    str_result += "[ "
+                    for val_ in atom_:
+                        # print(val_)
+                        str_result += str(val_)
+                        str_result += ", "
+                    str_result = str_result[:-2] + " ],\n"
+                else:
+                    str_result += str(atom_) + ", "
+            str_result = str_result[:-2] + "\n]"
+        else:
+            str_result += str(list_)
+        # print(str_result)
+        return str_result
+    
+    def commit(self):
+        try:
+            self.cur.commit()
+        except sqlite3.Error as e:
+            return f"{e}"
+        return "ok"
+        
+    def rollback(self):
+        try:
+            self.cur.rollback()
+        except sqlite3.Error as e:
+            return f"{e}"
+        return "ok"
+
     def select_file(self, file_name):
         str_sql = r'SELECT file, document, customer, section,' \
                 'before, latest' \
@@ -48,7 +90,7 @@ class WasurejiDB(object):
         try:
             self.cur.execute(str_sql)
         except sqlite3.Error as e:
-            print(f"SQLiteエラーが発生: {e}")
+            print(f"error_db: {e}")
             exit(-1)
         list_base = self.cur.fetchall()
         # print(list_base)
@@ -67,7 +109,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
     def replace_file(self, file, document, customer, section,
@@ -84,7 +126,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
     def select_document(self):
@@ -122,7 +164,7 @@ class WasurejiDB(object):
         try:
             self.cur.execute(str_sql)
         except sqlite3.Error as e:
-            print(f"SQLiteエラーが発生: {e}")
+            print(f"error_db: {e}")
             exit(-1)
         list_input = self.cur.fetchall()
         # print(list_input)
@@ -138,7 +180,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
     def replace_input(self, file, date, origin, by):
@@ -152,7 +194,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
 
@@ -183,7 +225,7 @@ class WasurejiDB(object):
         try:
             self.cur.execute(str_sql)
         except sqlite3.Error as e:
-            print(f"SQLiteエラーが発生: {e}")
+            print(f"error_db: {e}")
             exit(-1)
         list_output = self.cur.fetchall()
         return list_output
@@ -198,7 +240,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
     def replace_output(self, file, date, delivery, by):
@@ -213,7 +255,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
     def delete_output(self, file):
@@ -225,7 +267,7 @@ class WasurejiDB(object):
             self.cur.execute(str_sql)
             self.conn.commit()
         except sqlite3.Error as e:
-            return f"error:{e}"
+            return f"error_db:{e}"
         return "ok"
 
 

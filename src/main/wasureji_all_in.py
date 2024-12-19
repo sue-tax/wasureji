@@ -51,6 +51,11 @@ class wasureji_all_in(object):
                 str_origin = self.window["-input_origin-"].get()
                 str_by = self.window["-input_by-"].get()
                 for str_file_name in list_file_name:
+                    rcv = self.seq.send_ask_file(str_file_name)
+                    if rcv == None:
+                        self.seq.send_insert_file(
+                                str_file_name,
+                                "", "","", "", "")
                     rcv = self.seq.send_ask_in(str_file_name)
                     if rcv == None:
                         self.seq.send_insert_in(str_file_name,
