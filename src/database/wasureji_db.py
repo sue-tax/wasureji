@@ -114,6 +114,8 @@ class WasurejiDB(object):
 
     def replace_file(self, file, document, customer, section,
             before, latest):
+        # wasureji_input 終了時に利用している
+        # set_history をどうするかは、要検討
         str_sql = r'UPDATE base SET ' \
                 'document = "{}", customer="{}", ' \
                 'section = "{}",' \
@@ -129,6 +131,23 @@ class WasurejiDB(object):
             return f"error_db:{e}"
         return "ok"
 
+    def set_history(self, file, document, customer, section):
+        str_sql_select = r'SELECT file, before, least ' \
+                'FROM base WHERE ' \
+                'document = "{}", customer="{}", ' \
+                'section = "{}"'. \
+                format(document, customer, section)
+        try:
+            self.cur.execute(str_sql_select)
+        except sqlite3.Error as e:
+            return f"error_db:{e}"
+        list_ = self.cur.fetchall()
+        
+        # TODO
+        
+        
+            
+                
     def select_document(self):
         str_sql = r'SELECT DISTINCT document' \
                 ' FROM base'

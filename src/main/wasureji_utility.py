@@ -6,6 +6,8 @@ Created on 2024/12/14
 from main import PORT
 from main.sequence import Sequence
 
+import openpyxl
+import glob
 import sys
 
 '''
@@ -22,8 +24,6 @@ import TkEasyGUI as eg
 
 class wasureji_utility(object):
     font_ = ("ＭＳゴシック")
-    
-    # TODO　検索や置換を、InputからComboへ
     
     layout_utility = [
         [eg.Button("サーバー終了", key="-kill-")],
@@ -248,7 +248,7 @@ class wasureji_utility(object):
         self.window = eg.Window("wasurejiユーティリティ",
                 self.layout_utility)
         self.window["-result-"].set_readonly(True)
-        self.window["-excel-"].set_disabled(True)
+        # self.window["-excel-"].set_disabled(True)
         self.window["-sql_update-"].set_disabled(True)
         self.window["-sql_delete-"].set_disabled(True)
         self.combo_set()
@@ -274,15 +274,19 @@ class wasureji_utility(object):
                 # print(str_result)
                 self.window["-result-"].set_text(str_result)
                 continue
-            if event == "-reload-":
-                self.combo_set()
-                continue
 
+            if event == "-excel-":
+                self.to_excel()
+                continue
+                
             if event == "-sql_find-":
                 self.find()
                 continue
             if event == "-sql_update-":
                 self.update()
+                continue
+            if event == "-reload-":
+                self.combo_set()
                 continue
 
             if event == "-exit-" or event == "WINDOW_CLOSED":
@@ -294,6 +298,50 @@ class wasureji_utility(object):
                 continue
         self.window.close()
     
+    
+    def to_excel(self):
+        str_result = self.window["-result-"].get()
+        if (str_result[0] != "[") or (str_result[-1] != "]"):
+            eg.popup_auto_close(
+                "検索結果がありません。",
+                "Information")
+            return
+        str_ = str_result[1:-1]
+        
+        excel_trunc = "wasureji"
+        excel_file_name = "wasureji.xlsx"
+        num_file = 2
+        files = glob.glob("*.xlsx")
+        while excel_file_name in files:
+            # excel_trunc += "_"
+            excel_file_name = excel_trunc + "_" + str(num_file) + ".xlsx"
+            num_file += 1
+        create_file = openpyxl.Workbook()
+        create_file.save(excel_file_name)
+
+        excel_file = openpyxl.load_workbook(excel_file_name)
+        sheet_list = excel_file.sheetnames
+        sheet_name = 'sheet_wasureji'
+        if sheet_name in sheet_list:
+            pass
+        else:
+            excel_file.create_sheet(title=sheet_name)
+        sheet = excel_file[sheet_name]
+        excel_file.active = sheet
+        
+        str_sql = self.window["-sql-"].get()
+        sheet.cell(row=1, column=1, value=str_sql)
+        start_row = 2
+        start_col = 1
+        list_line = str_.split('\n')
+        for y, row in enumerate(list_line):
+            list_ = row[1:-2].split(',')
+            for x, cell_ in enumerate(list_):
+                sheet.cell(row=start_row + y,
+                           column=start_col + x,
+                           value=cell_)
+        excel_file.save(excel_file_name)
+        
     def find(self):
         list_sql = ["SELECT "]
         if self.window["-cb_select_file-"].get():
@@ -336,6 +384,7 @@ class wasureji_utility(object):
         # print(str_sql)
         str_result = self.seq.send_execute_sql(str_sql)
         # print(str_result)
+        self.window["-sql-"].set_text(str_sql)
         self.window["-result-"].set_text(str_result)
 
     def update(self):

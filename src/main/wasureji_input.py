@@ -17,6 +17,11 @@ import sys
 
 '''
 作成予定の他のクライアント
+wasureji_confirm
+　表示＆削除
+wasureji_history
+　指定したファイルの最新や履歴を表示
+　クリックでpdfソフト等が起動
 ユーティリティ
 　KILL
 　検索
