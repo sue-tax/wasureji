@@ -13,10 +13,7 @@ import sys
 
 
 '''
-表示
-履歴の表示、
-pdfソフトの起動    os.startfile(ファイルパス)
-削除
+TODO　削除
 '''
 
 import TkEasyGUI as eg
@@ -54,15 +51,15 @@ class wasureji_browse(object):
                 eg.Input("", width=50, key="-latest-"),
                 eg.Button("表示", key="-display_latest-"),
                 eg.Label("　　　　"),
-                eg.Button("削除", key="-delete_latest-"),
+                # eg.Button("削除", key="-delete_latest-"),
                 ],
         [eg.Label("履歴"),
                 eg.Label("　　　　"),
-                eg.Button("Excel", key="-excel_history-"),
+                # eg.Button("Excel", key="-excel_history-"),
                 eg.Label("　　　 　　　　　　　　　　　　　"),
                 eg.Button("表示", key="-display_history-"),
                 eg.Label("　　　　"),
-                eg.Button("削除", key="-delete_history-"),
+                # eg.Button("削除", key="-delete_history-"),
                 ],
         [eg.Listbox( 
             # values=get_program_files(), 
@@ -208,17 +205,17 @@ class wasureji_browse(object):
         
         self.window["-ok-"].set_disabled(False)
 
-        self.window["-delete_file-"].set_disabled(False)
-        self.window["-delete_latest-"].set_disabled(False)
-        self.window["-delete_history-"].set_disabled(False)
-        self.window["-excel_history-"].set_disabled(False)
+        # self.window["-delete_file-"].set_disabled(False)
+        # self.window["-delete_latest-"].set_disabled(False)
+        # self.window["-delete_history-"].set_disabled(False)
+        # self.window["-excel_history-"].set_disabled(False)
                 
         if not flag_exist_latest:
             self.window["-display_latest-"].set_disabled(True)
-            self.window["-delete_latest-"].set_disabled(True)
-            self.window["-excel_history-"].set_disabled(True)
+            # self.window["-delete_latest-"].set_disabled(True)
+            # self.window["-excel_history-"].set_disabled(True)
             self.window["-display_history-"].set_disabled(True)
-            self.window["-delete_history-"].set_disabled(True)
+            # self.window["-delete_history-"].set_disabled(True)
 
         while True:
             event, _values = self.window.read()
