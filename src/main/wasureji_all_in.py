@@ -16,7 +16,7 @@ import TkEasyGUI as eg
 
 class wasureji_all_in(object):
     layout_all_in = [
-        [eg.Label("入力")],
+        [eg.Label("受取り")],
         [eg.Label("いつ　"), eg.Combo("", key="-input_date-")],
         [eg.Label("誰から"), eg.Combo("", key="-input_origin-")],
         [eg.Label("何で　"), eg.Combo("", key="-input_by-")],
@@ -34,7 +34,7 @@ class wasureji_all_in(object):
         d_yesterday = d_today + relativedelta(days=-1)
         list_date = [d_today.strftime('%Y%m%d'), d_yesterday.strftime('%Y%m%d')]
     
-        self.window = eg.Window("一括入力設定", self.layout_all_in)
+        self.window = eg.Window("一括受取り設定", self.layout_all_in)
         self.window["-input_date-"].set_values(list_date)
         self.window["-input_date-"].set_value("")
         self.window["-input_origin-"].set_values(list_in_origin)
@@ -55,7 +55,7 @@ class wasureji_all_in(object):
                     if rcv == None:
                         self.seq.send_insert_file(
                                 str_file_name,
-                                "", "","", "", "")
+                                "", "","")
                     rcv = self.seq.send_ask_in(str_file_name)
                     if rcv == None:
                         self.seq.send_insert_in(str_file_name,

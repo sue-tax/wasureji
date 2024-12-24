@@ -1,4 +1,4 @@
-__VERSION__ = '0.06'
+__VERSION__ = '0.07'
 
 PORT = 50054
 
@@ -32,3 +32,5 @@ ASK_IN_ORIGIN = "ino ?"
 ASK_IN_BY     = "inb ?"
 ASK_OUT_DELIV = "outd?"
 ASK_OUT_BY    = "outb?"
+
+ASK_HISTORY   = "hist?"

@@ -42,6 +42,7 @@ class WasurejiDB(object):
     def execute_sql(self, str_sql):
         try:
             self.cur.execute(str_sql)
+            # COMMIT,ROLLBACK は、ユーザー任せ
         except sqlite3.Error as e:
             return f"{e}"
         list_ = self.cur.fetchall()
@@ -69,14 +70,14 @@ class WasurejiDB(object):
     
     def commit(self):
         try:
-            self.cur.commit()
+            self.conn.commit()
         except sqlite3.Error as e:
             return f"{e}"
         return "ok"
         
     def rollback(self):
         try:
-            self.cur.rollback()
+            self.conn.rollback()
         except sqlite3.Error as e:
             return f"{e}"
         return "ok"
@@ -96,14 +97,21 @@ class WasurejiDB(object):
         # print(list_base)
         return list_base
 
-    def insert_file(self, file, document, customer, section,
-            before, latest):
+    def insert_file(self, file,
+            document, customer, section):
+            # before, latest):
+        (msg, old_latest) = self.set_history(file,
+                document, customer, section)
+        # print(msg)
+        # print(old_latest)
+        if (old_latest == None):
+            old_latest = ""
         str_sql = r'INSERT INTO base' \
                 '(file, document, customer, section,' \
-                'before, latest)' \
-                ' VALUES("{}", "{}", "{}", "{}", "{}", "{}")'. \
+                'before)' \
+                ' VALUES("{}", "{}", "{}", "{}", "{}")'. \
                 format(file, document, customer, section,
-                before, latest)
+                old_latest)
         # print(str_sql)
         try:
             self.cur.execute(str_sql)
@@ -112,17 +120,27 @@ class WasurejiDB(object):
             return f"error_db:{e}"
         return "ok"
 
-    def replace_file(self, file, document, customer, section,
-            before, latest):
-        # wasureji_input 終了時に利用している
-        # set_history をどうするかは、要検討
+    def replace_file(self, file,
+            document, customer, section,
+            old_document, old_customer, old_section):
+        rv = self.reset_history(file,
+                old_document, old_customer, old_section)
+        if (rv == None):
+            (msg, old_latest) = self.set_history(file,
+                    document, customer, section)
+            # print(msg)
+            # print(old_latest)
+            if (old_latest == None):
+                old_latest = ""
+        else:
+            old_latest = ""
         str_sql = r'UPDATE base SET ' \
                 'document = "{}", customer="{}", ' \
                 'section = "{}",' \
-                'before ="{}", latest="{}"' \
+                'before ="{}", latest=""' \
                 ' WHERE file = "{}"'. \
                 format(document, customer, section,
-                before, latest, file)
+                old_latest, file)
         # print(str_sql)
         try:
             self.cur.execute(str_sql)
@@ -132,22 +150,202 @@ class WasurejiDB(object):
         return "ok"
 
     def set_history(self, file, document, customer, section):
-        str_sql_select = r'SELECT file, before, least ' \
+        str_sql_select = r'SELECT file, before, latest ' \
                 'FROM base WHERE ' \
-                'document = "{}", customer="{}", ' \
-                'section = "{}"'. \
+                'document = "{}" AND customer="{}" ' \
+                'AND section = "{}"'. \
                 format(document, customer, section)
+        # print(str_sql_select)
         try:
             self.cur.execute(str_sql_select)
         except sqlite3.Error as e:
-            return f"error_db:{e}"
+            return (f"error_db:{e}", None)
         list_ = self.cur.fetchall()
+        if len(list_) == 0:
+            return ("ok", None)
+        # 現時点のlatestを探す
+        for base_ in list_:
+            if (base_[2] == None) or (base_[2] == ""):
+                break
+        else:
+            return ("error:not exist least", None)
         
-        # TODO
+        old_latest = base_[0]
+        str_sql_update = r'UPDATE base SET ' \
+                'latest="{}"' \
+                ' WHERE file="{}" AND ' \
+                'document = "{}" AND customer="{}" AND ' \
+                'section = "{}"'. \
+                format(file, base_[0],
+                        document, customer, section)
+        # print(str_sql_update)
+        try:
+            self.cur.execute(str_sql_update)
+        except sqlite3.Error as e:
+            return (f"error_db:{e}", None)
         
+        while not((base_[1] == None) or (base_[1] == "")):
+            before_file = base_[1]
+            for before_ in list_:
+                if (before_[0] == before_file):
+                    str_sql_update = r'UPDATE base SET ' \
+                            'latest="{}"' \
+                            ' WHERE file="{}" AND ' \
+                            'document = "{}" AND customer="{}" ' \
+                            'AND section = "{}"'. \
+                            format(file, before_[0],
+                                    document, customer, section)
+                    # print(str_sql_update)
+                    try:
+                        self.cur.execute(str_sql_update)
+                    except sqlite3.Error as e:
+                        self.conn.rollback()
+                        return (f"error_db:{e}", None)
+                    base_ = before_
+                    break
+            else:
+                self.conn.rollback()
+                return ("error:not exist before", None)
+            # print(base_)
+        self.conn.commit()
+        return ("ok", old_latest)
+
+    def reset_history(self, file,
+            document, customer, section):
+        str_sql_select = r'SELECT file, before, latest ' \
+                'FROM base WHERE ' \
+                'document = "{}" AND customer="{}" ' \
+                'AND section = "{}"'. \
+                format(document, customer, section)
+        # print(str_sql_select)
+        try:
+            self.cur.execute(str_sql_select)
+        except sqlite3.Error as e:
+            return (f"error_db:{e}", None)
+        list_ = self.cur.fetchall()
+        if len(list_) == 0:
+            return ("ok", None)
+        # 現時点のlatestを探す
+        for base_ in list_:
+            if (base_[2] == None) or (base_[2] == ""):
+                break
+        else:
+            return ("error:not exist least", None)
         
-            
-                
+        if base_[0] == file:
+            # 指定されたファイルがlatestの場合
+            # print("指定されたファイルがlatestの場合")
+            new_latest = base_[1]
+            if (not((new_latest == None) or (new_latest == ""))):
+                str_sql_update = r'UPDATE base SET ' \
+                        'latest=""' \
+                        ' WHERE file="{}" AND ' \
+                        'document = "{}" AND customer="{}" AND ' \
+                        'section = "{}"'. \
+                        format(new_latest,
+                                document, customer, section)
+                # print(str_sql_update)
+                try:
+                    self.cur.execute(str_sql_update)
+                except sqlite3.Error as e:
+                    return (f"error_db:{e}", None)
+                if ((base_[1] == None) or (base_[1] == "")):
+                    return None
+                for before_ in list_:
+                    if (before_[0] == base_[1]):
+                        break
+                else:
+                    self.conn.rollback()
+                    return ("error:not exist before", None)
+                base_ = before_
+                while not((base_[1] == None) or (base_[1] =="")):
+                    before_file = base_[1]
+                    for before_ in list_:
+                        if (before_[0] == before_file):
+                            str_sql_update = r'UPDATE base SET ' \
+                                    'latest="{}"' \
+                                    ' WHERE file="{}" AND ' \
+                                    'document = "{}" AND customer="{}" ' \
+                                    'AND section = "{}"'. \
+                                    format(new_latest, before_[0],
+                                            document, customer, section)
+                            # print(str_sql_update)
+                            try:
+                                self.cur.execute(str_sql_update)
+                            except sqlite3.Error as e:
+                                self.conn.rollback()
+                                return (f"error_db:{e}", None)
+                            base_ = before_
+                            break
+                    else:
+                        self.conn.rollback()
+                        return ("error:not exist before", None)
+                    # print(base_)
+        else:
+            # 指定されたファイルがlatestでない場合
+            # base_ がlatest
+            # print("base_ がlatest")
+            while not((base_[1] == None) or (base_[1] == "")):
+                if base_[1] == file:
+                    # print("base_[1] == file")
+                    for before_ in list_:
+                        if before_[0] == file:
+                            break
+                    else:
+                        self.conn.rollback()
+                        return ("error:not exist before", None)
+                    # for before_before in list_:
+                    #     if before_before[0] == before_[1]:
+                    #         break;
+                    # else:
+                    #     self.conn.rollback()
+                    #     return ("error:not exist before", None)
+                    # print(before_)
+                    # print(before_before)
+                    str_sql_update = r'UPDATE base SET ' \
+                            'before="{}"' \
+                            ' WHERE file="{}" AND ' \
+                            'document = "{}" AND customer="{}" ' \
+                            'AND section = "{}"'. \
+                            format(before_[1],
+                                    base_[0],
+                                    document, customer, section)
+                    # print(str_sql_update)
+                    try:
+                        self.cur.execute(str_sql_update)
+                    except sqlite3.Error as e:
+                        self.conn.rollback()
+                        return (f"error_db:{e}", None)
+                    return None
+                for before_ in list_:
+                    if before_[0] == base_[1]:
+                        break
+                else:
+                    self.conn.rollback()
+                    return ("error:not exist before", None)
+                base_ = before_
+            else:
+                self.conn.rollback()
+                return ("error:not exist before", None)
+        return None
+
+    def select_history(self, document, customer, section):
+        str_sql_select = r'SELECT file, before, latest ' \
+                'FROM base WHERE ' \
+                'document = "{}" AND customer="{}" ' \
+                'AND section = "{}"'. \
+                format(document, customer, section)
+        # print(str_sql_select)
+        try:
+            self.cur.execute(str_sql_select)
+        except sqlite3.Error as e:
+            return (f"error_db:{e}", None)
+        list_ = self.cur.fetchall()
+        # print(list_)
+        if len(list_) == 0:
+            return ("ok", None)
+        return list_
+    
     def select_document(self):
         str_sql = r'SELECT DISTINCT document' \
                 ' FROM base'

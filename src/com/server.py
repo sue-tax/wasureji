@@ -26,7 +26,10 @@ class WasurejiHandler(socketserver.BaseRequestHandler):
             str_rcv = data_rcv.decode(encoding='utf-8')
             # print(str_rcv)
             str_msg = WasurejiHandler.server.recv(str_rcv)
+            # print(str_msg)
             data_msg = bytes(str_msg, 'utf-8')
+            # print(data_msg)
+            # print(len(data_msg))
             self.request.sendall(pack('!I', len(data_msg)))
             self.request.sendall(data_msg)
         except Exception as e:

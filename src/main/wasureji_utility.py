@@ -56,18 +56,18 @@ class wasureji_utility(object):
             eg.Label("　　"),
             eg.Button("表示", key="-sql_find-"),
             eg.Label("　　　"),
-            eg.Button("置換", key="-sql_update-"),
+            # eg.Button("置換", key="-sql_update-"),
             eg.Label("　　　　　　　　　　　"),
-            eg.Button("削除", key="-sql_delete-"),
+            # eg.Button("削除", key="-sql_delete-"),
             eg.Label("　　　　　　　　　　　　　　"),
             eg.Button("再読込", key="-reload-")    # Combo再設定
             ],
         [eg.Label("　　　　　　　　"),
             eg.Label("表示"),
             eg.Label("　　　　"),
-            eg.Label("置換　　　　　　　"),
+            # eg.Label("置換　　　　　　　"),
             eg.Label("　　　　　"),
-            eg.Label("削除　　"),
+            # eg.Label("削除　　"),
             eg.Label("検索条件　　　　　　　　　　")
             ],
             
@@ -76,27 +76,28 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_file-"),
             eg.Label("　　"),
-            eg.Checkbox(key="-cb_update_file-"),
-            eg.Input("", width=20, key="-inp_update_file-"),
-            eg.Label("　　　　　　　"),
+            # eg.Checkbox(key="-cb_update_file-"),
+            # eg.Input("", width=20, key="-inp_update_file-"),
+            # eg.Label("　　　　　　　"),
+            eg.Label("　　　　　　"),
             eg.Checkbox(key="-cb_where_file-"),
             eg.Input("", width=20, key="-inp_where_file-")
             ],
         [eg.Label("基本＿"),
             eg.Label("　　　　　　　　　"),
-            eg.Label("置換"),
-            eg.Checkbox(key="-cb_update_file-"),
-            eg.Label("　　　　　　　　　　　"),
-            eg.Label("削除"),
-            eg.Checkbox(key="-cb_delete_file-")
+            # eg.Label("置換"),
+            # eg.Checkbox(key="-cb_update_file-"),
+            # eg.Label("　　　　　　　　　　　"),
+            # eg.Label("削除"),
+            # eg.Checkbox(key="-cb_delete_file-")
             ],
         [
             eg.Label("書類名＿", font=font_),# font=font_),
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_document-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_document-"),
-            eg.Combo("", width=20, key="-inp_update_document-"),
+            # eg.Checkbox(key="-cb_update_document-"),
+            # eg.Combo("", width=20, key="-inp_update_document-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_document-"),
             eg.Combo("", key="-inp_where_document-")
@@ -106,8 +107,8 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_customer-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_customer-"),
-            eg.Combo("", width=20, key="-inp_update_customer-"),
+            # eg.Checkbox(key="-cb_update_customer-"),
+            # eg.Combo("", width=20, key="-inp_update_customer-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_customer-"),
             eg.Combo("", key="-inp_where_customer-")
@@ -117,8 +118,8 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_section-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_section-"),
-            eg.Combo("", width=20, key="-inp_update_section-"),
+            # eg.Checkbox(key="-cb_update_section-"),
+            # eg.Combo("", width=20, key="-inp_update_section-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_section-"),
             eg.Combo("", key="-inp_where_section-"),
@@ -127,20 +128,21 @@ class wasureji_utility(object):
 
         [eg.Label("受取り"),
             eg.Label("　　　　　　　　　"),
-            eg.Label("置換"),
-            eg.Checkbox(key="-cb_update_input-"),
-            eg.Label("　　　　　　　　　　　"),
-            eg.Label("削除"),
-            eg.Checkbox(key="-cb_delete_input-")
+            # eg.Label("置換"),
+            # eg.Checkbox(key="-cb_update_input-"),
+            # eg.Label("　　　　　　　　　　　"),
+            # eg.Label("削除"),
+            # eg.Checkbox(key="-cb_delete_input-")
             ],
         [
             eg.Label("いつ＿＿", font=font_),
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_indate-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_indate-"),
-            eg.Input("", width=20, key="-inp_update_indate-"),
-            eg.Label("　　　　　　　"),
+            # eg.Checkbox(key="-cb_update_indate-"),
+            # eg.Input("", width=20, key="-inp_update_indate-"),
+            # eg.Label("　　　　　　　"),
+            eg.Label("　　　　　 "),
             eg.Checkbox(key="-cb_where_indate-"),
             eg.Input("", key="-inp_where_indate-"),
             eg.Label("　～　"),
@@ -152,8 +154,8 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_inorigin-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_inorigin-"),
-            eg.Combo("", width=20, key="-inp_update_inorigin-"),
+            # eg.Checkbox(key="-cb_update_inorigin-"),
+            # eg.Combo("", width=20, key="-inp_update_inorigin-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_inorigin-"),
             eg.Combo("", key="-inp_where_inorigin-")
@@ -163,8 +165,8 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_inby-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_inby-"),
-            eg.Combo("", width=20, key="-inp_update_inby-"),
+            # eg.Checkbox(key="-cb_update_inby-"),
+            # eg.Combo("", width=20, key="-inp_update_inby-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_inby-"),
             eg.Combo("", key="-inp_where_inby-")
@@ -172,20 +174,21 @@ class wasureji_utility(object):
 
         [eg.Label("引渡し"),
             eg.Label("　　　　　　　　　"),
-            eg.Label("置換"),
-            eg.Checkbox(key="-cb_update_output-"),
-            eg.Label("　　　　　　　　　　　"),
-            eg.Label("削除"),
-            eg.Checkbox(key="-cb_delete_output-")
+            # eg.Label("置換"),
+            # eg.Checkbox(key="-cb_update_output-"),
+            # eg.Label("　　　　　　　　　　　"),
+            # eg.Label("削除"),
+            # eg.Checkbox(key="-cb_delete_output-")
             ],
         [
             eg.Label("いつ＿＿", font=font_),
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_outdate-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_outdate-"),
-            eg.Input("", width=20, key="-inp_update_outdate-"),
-            eg.Label("　　　　　　　"),
+            # eg.Checkbox(key="-cb_update_outdate-"),
+            # eg.Input("", width=20, key="-inp_update_outdate-"),
+            # eg.Label("　　　　　　　"),
+            eg.Label("　　　　　 "),
             eg.Checkbox(key="-cb_where_outdate-"),
             eg.Input("", key="-inp_where_outdate-"),
             eg.Label("　～　"),
@@ -197,8 +200,8 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_outdelivery-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_outdelivery-"),
-            eg.Combo("", width=20, key="-inp_update_outdelivery-"),
+            # eg.Checkbox(key="-cb_update_outdelivery-"),
+            # eg.Combo("", width=20, key="-inp_update_outdelivery-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_outdelivery-"),
             eg.Combo("", key="-inp_where_outdelivery-")
@@ -208,8 +211,8 @@ class wasureji_utility(object):
             eg.Label("　　　"),
             eg.Checkbox(key="-cb_select_outby-"),
             eg.Label("　　　"),
-            eg.Checkbox(key="-cb_update_outby-"),
-            eg.Combo("", width=20, key="-inp_update_outby-"),
+            # eg.Checkbox(key="-cb_update_outby-"),
+            # eg.Combo("", width=20, key="-inp_update_outby-"),
             eg.Label("　　　　　"),
             eg.Checkbox(key="-cb_where_outby-"),
             eg.Combo("", key="-inp_where_outby-")
@@ -234,13 +237,13 @@ class wasureji_utility(object):
         self.window["-inp_where_inby-"].set_values(list_in_by)
         self.window["-inp_where_outdelivery-"].set_values(list_out_delivery)
         self.window["-inp_where_outby-"].set_values(list_out_by)
-        self.window["-inp_update_document-"].set_values(list_doc)
-        self.window["-inp_update_customer-"].set_values(list_cust)
-        self.window["-inp_update_section-"].set_values(list_sect)
-        self.window["-inp_update_inorigin-"].set_values(list_in_origin)
-        self.window["-inp_update_inby-"].set_values(list_in_by)
-        self.window["-inp_update_outdelivery-"].set_values(list_out_delivery)
-        self.window["-inp_update_outby-"].set_values(list_out_by)
+        # self.window["-inp_update_document-"].set_values(list_doc)
+        # self.window["-inp_update_customer-"].set_values(list_cust)
+        # self.window["-inp_update_section-"].set_values(list_sect)
+        # self.window["-inp_update_inorigin-"].set_values(list_in_origin)
+        # self.window["-inp_update_inby-"].set_values(list_in_by)
+        # self.window["-inp_update_outdelivery-"].set_values(list_out_delivery)
+        # self.window["-inp_update_outby-"].set_values(list_out_by)
 
     def start(self):
         self.seq = Sequence(PORT)
@@ -249,8 +252,8 @@ class wasureji_utility(object):
                 self.layout_utility)
         self.window["-result-"].set_readonly(True)
         # self.window["-excel-"].set_disabled(True)
-        self.window["-sql_update-"].set_disabled(True)
-        self.window["-sql_delete-"].set_disabled(True)
+        # self.window["-sql_update-"].set_disabled(True)
+        # self.window["-sql_delete-"].set_disabled(True)
         self.combo_set()
 
         while True:
@@ -296,6 +299,9 @@ class wasureji_utility(object):
                 if answer:
                     break
                 continue
+            if event == "WINDOW_CLOSED":
+                break
+
         self.window.close()
     
     
@@ -394,6 +400,8 @@ class wasureji_utility(object):
         
         # update base SET customer="J" FROM base as bs LEFT OUTER JOIN input ON bs.file=input.file LEFT JOIN output ON bs.file=output.file WHERE bs.customer="ジェイオー"        
         # 成功のようだ
+        
+        # TODO
         
         str_sql = "UPDATE base,input,output SET "
         list_sql = []

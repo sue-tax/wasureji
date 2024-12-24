@@ -40,9 +40,9 @@ class Sequence(object):
             str_msg = database.insert_file(list_str[0][1:-1],
                     list_str[1][1:-1],
                     list_str[2][1:-1],
-                    list_str[3][1:-1],
-                    list_str[4][1:-1],
-                    list_str[5][1:-1])
+                    list_str[3][1:-1])
+                    # list_str[4][1:-1],
+                    # list_str[5][1:-1])
             return str_msg
         if str_msg.startswith(REP_FILE):
             list_str = str_msg[len(REP_FILE):].split(',')
@@ -51,7 +51,8 @@ class Sequence(object):
                     list_str[2][1:-1],
                     list_str[3][1:-1],
                     list_str[4][1:-1],
-                    list_str[5][1:-1])
+                    list_str[5][1:-1],
+                    list_str[6][1:-1])
             return str_msg
 
         if str_msg.startswith(ASK_DOC):
@@ -179,6 +180,26 @@ class Sequence(object):
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
+        if str_msg.startswith(ASK_HISTORY):
+            list_str = str_msg[len(ASK_HISTORY):].split(',')
+            list_history = database.select_history(
+                    list_str[0][1:-1],
+                    list_str[1][1:-1],
+                    list_str[2][1:-1])
+            # print(list_history)
+            if len(list_history) == 0:
+                return("[]")
+            ret_msg = r'['
+            for list_ in list_history:
+                ret_msg += r'["{}","{}","{}"];'. \
+                        format(list_[0],
+                        list_[1] if list_[1] != None else "",
+                        list_[2] if list_[2] != None else "")
+                # print(ret_msg)
+            ret_msg = ret_msg[:-1] + ']'
+            # print(ret_msg)
+            return ret_msg
+            
         return ("??")
 
     def send_kill(self):
@@ -218,24 +239,25 @@ class Sequence(object):
                     list_str[4][1:-1])
 
     def send_insert_file(self, str_file_name,
-            str_document, str_customer, str_section,
-            str_before, str_latest):
+            str_document, str_customer, str_section):
+            # str_before, str_latest):
         client_ = client()
-        str_send = r'{}"{}","{}","{}","{}","{}","{}"'. \
+        str_send = r'{}"{}","{}","{}","{}"'. \
                 format(INS_FILE, str_file_name,
-                str_document, str_customer, str_section,
-                str_before, str_latest)
+                str_document, str_customer, str_section)
+                # str_before, str_latest)
         str_rcv = client_.send(self.port, str_send)
         return str_rcv
 
     def send_replace_file(self, str_file_name,
             str_document, str_customer, str_section,
-            str_before, str_latest):
+            old_document, old_customer, old_section):
+            # str_before, str_latest):
         client_ = client()
-        str_send = r'{}"{}","{}","{}","{}","{}","{}"'. \
+        str_send = r'{}"{}","{}","{}","{}","{}","{}","{}"'. \
                 format(REP_FILE, str_file_name,
                 str_document, str_customer, str_section,
-                str_before, str_latest)
+                old_document, old_customer, old_section)
         str_rcv = client_.send(self.port, str_send)
         return str_rcv
 
@@ -405,4 +427,26 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
+            return list_atom
+
+    def send_ask_history(self,
+            str_document, str_customer, str_section):
+        client_ = client()
+        str_send = r'{}"{}","{}","{}"'. \
+                format(ASK_HISTORY,
+                str_document, str_customer, str_section)
+        str_rcv = client_.send(self.port, str_send)
+        # print(str_rcv)
+        if str_rcv == "[]" or str_rcv == "??":
+            return None
+        else:
+            list_str = str_rcv[1:-1].split(';')
+            # print(list_str)
+            list_atom = []
+            for atom_str in list_str:
+                # print(atom_str)
+                atom_ = atom_str[1:-1].split(',')
+                list_atom.append([ atom_[0][1:-1],
+                        atom_[1][1:-1],
+                        atom_[2][1:-1] ])
             return list_atom

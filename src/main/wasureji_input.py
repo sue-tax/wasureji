@@ -19,20 +19,24 @@ import sys
 作成予定の他のクライアント
 wasureji_confirm
 　表示＆削除
-wasureji_history
+wasureji_history confirmとセット
 　指定したファイルの最新や履歴を表示
 　クリックでpdfソフト等が起動
 ユーティリティ
-　KILL
-　検索
-　検索後、削除・置換
-　SQL 検索、その他
+　KILL 済
+　検索　済
+　検索後、削除・置換　保留
+　SQL 検索、その他　済
 '''
 
 '''
-TODO before,latestの処理
+before,latestの処理 済
 '''
 
+'''
+host,port,dbの指定
+ネット間手続
+'''
 
 import TkEasyGUI as eg
 
@@ -187,7 +191,11 @@ class wasureji_input(object):
         self.window["-output_by-"].set_disabled(True)
         if self.out_index > 1:
             self.window["-output_left-"].set_disabled(False)
+        else:
+            self.window["-output_left-"].set_disabled(True)
         if self.out_index == self.out_all:
+            self.window["-output_right-"].set_disabled(True)
+        else:
             self.window["-output_right-"].set_disabled(False)
         self.window["-cancel-"].set_disabled(False)
         self.window["-ok-"].set_disabled(False)
@@ -243,9 +251,9 @@ class wasureji_input(object):
         if list_base == None:
             flag_exist_base = False 
             list_base = ["", "", "", "", ""]
-        set_doc = list_base[0]
-        set_cust = list_base[1]
-        set_sect = list_base[2]
+        self.set_doc = list_base[0]
+        self.set_cust = list_base[1]
+        self.set_sect = list_base[2]
         list_in = self.seq.send_ask_in(file_name)
         # print(list_in)
         flag_exist_in = True
@@ -272,21 +280,18 @@ class wasureji_input(object):
         set_out_delivery = self.list_out[0][1]
         set_out_by = self.list_out[0][2]
     
-        self.window = eg.Window("wasureji", self.layout_input)
-        # with eg.Window("wasureji", self.layout_input) as window:
-            # window["-file-"].set_text(file_name)
-            # window["-file-"].set_cursor_pos(len(file_name)-1)
-            # window["-file-"].set_readonly(True)
+        self.window = eg.Window("wasureji_input",
+                self.layout_input)
         base_name = os.path.basename(file_name)
         self.window["-file-"].update(text=base_name,
                 readonly=True) #, text_align="right")
         self.window["-file-"].set_cursor_pos(len(file_name)-1)
         self.window["-document-"].set_values(list_doc)
-        self.window["-document-"].set_value(set_doc)
+        self.window["-document-"].set_value(self.set_doc)
         self.window["-customer-"].set_values(list_cust)
-        self.window["-customer-"].set_value(set_cust)
+        self.window["-customer-"].set_value(self.set_cust)
         self.window["-section-"].set_values(list_sect)
-        self.window["-section-"].set_value(set_sect)
+        self.window["-section-"].set_value(self.set_sect)
 
         self.window["-input_date-"].set_values(list_date)
         self.window["-input_date-"].set_value(set_in_date)
@@ -310,13 +315,7 @@ class wasureji_input(object):
         self.window["-output_by-"].set_readonly(True)
         self.window["-output_by-"].set_disabled(True)
 
-        # self.window["-output_date-"].set_readonly(False)
-        # self.window["-output_date-"].set_disabled(False)
-        # self.window["-output_delivery-"].set_readonly(False)
-        # self.window["-output_delivery-"].set_disabled(False)
-        # self.window["-output_by-"].set_readonly(False)
-        # self.window["-output_by-"].set_disabled(False)
-        self.window["-output_index-"].set_text(str(self.out_index))
+        # self.window["-output_index-"].set_text(str(self.out_index))
         self.window["-output_append-"].set_disabled(False)
         self.window["-output_change-"].set_disabled(False)
         self.window["-output_abort-"].set_disabled(True)
@@ -356,22 +355,26 @@ class wasureji_input(object):
                 continue
             
             if event == "-ok-":
+                get_doc = self.window["-document-"].get()
+                get_cust = self.window["-customer-"].get()
+                get_sect = self.window["-section-"].get()
                 if flag_exist_base:
-                    self.seq.send_replace_file(
-                            file_name,
-                            self.window["-document-"].get(),
-                            self.window["-customer-"].get(),
-                            self.window["-section-"].get(), "", "")
+                    if ((self.set_doc != get_doc) \
+                            or (self.set_cust != get_cust) \
+                            or (self.set_sect != get_sect)):
+                        self.seq.send_replace_file(
+                                file_name,
+                                get_doc, get_cust, get_sect,
+                                self.set_doc, self.set_cust,
+                                self.set_sect)
                 else:
                     self.seq.send_insert_file(
                             file_name,
-                            self.window["-document-"].get(),
-                            self.window["-customer-"].get(),
-                            self.window["-section-"].get(), "", "")
+                            get_doc, get_cust, get_sect)
                 
-                pyperclip.copy(self.window["-section-"].get())
-                pyperclip.copy(self.window["-customer-"].get())
-                pyperclip.copy(self.window["-document-"].get())
+                pyperclip.copy(get_sect)
+                pyperclip.copy(get_cust)
+                pyperclip.copy(get_doc)
                 
                 if flag_exist_in:
                     self.seq.send_replace_in(
