@@ -1,8 +1,23 @@
-__VERSION__ = '0.07'
+__VERSION__ = '0.10'
 
-PORT = 50054
+# PORT = 50054
+#
+# DATABASE = "wasureji.db"
 
-DATABASE = "wasureji.db"
+'''
+wasureji.json
+{
+    "host" : "192.168.0.xx",    # or null
+    "port" : 50054,
+    "database" : "wasureji.db",
+    "directory" : "c:\\document\\yyyyyyyy",
+    "excel_file" : "wasureji.xlsx",
+    "excel_sheet" : "wasureji"
+}
+'''
+
+
+PING     = "ping"
 
 KILL     = "kill"
 SQL      = "sql :"

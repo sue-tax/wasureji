@@ -5,7 +5,7 @@ Created on 2024/12/10
 @author: sue-t
 '''
 
-from main import PORT
+# from main import PORT
 from main.sequence import Sequence
 
 import pyperclip
@@ -13,15 +13,19 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import os
 import sys
+import json
+import win32com.client
+import TkEasyGUI as eg
 
 
 '''
 作成予定の他のクライアント
 wasureji_confirm
-　表示＆削除
+　表示　済
+　削除　未
 wasureji_history confirmとセット
-　指定したファイルの最新や履歴を表示
-　クリックでpdfソフト等が起動
+　指定したファイルの最新や履歴を表示 済
+　クリックでpdfソフト等が起動　未
 ユーティリティ
 　KILL 済
 　検索　済
@@ -37,8 +41,6 @@ before,latestの処理 済
 host,port,dbの指定
 ネット間手続
 '''
-
-import TkEasyGUI as eg
 
 class wasureji_input(object):
     layout_input = [
@@ -231,8 +233,18 @@ class wasureji_input(object):
             self.window["-output_right-"].set_disabled(True)
         return True
 
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+
     def start(self, file_name):
-        self.seq = Sequence(PORT)
+        # self.seq = Sequence(PORT)
+        self.seq = Sequence(self.host, self.port)
+        str_msg = self.seq.ping()
+        if str_msg != None:
+            eg.popup_error(str_msg,
+                    "サーバーが起動していない")
+            return -1
         list_doc = self.seq.send_ask_document()
         list_cust = self.seq.send_ask_customer()
         list_sect = self.seq.send_ask_section()
@@ -402,6 +414,18 @@ class wasureji_input(object):
 if __name__ == '__main__':
     file_name = str(sys.argv[1])
     # file_name = str("c:/dfafafa/adfaafafa/afafafa/abcd.pdf")
-    input_ = wasureji_input()
+    try:
+        objShell = win32com.client.Dispatch("WScript.Shell")
+        dir_name = objShell.SpecialFolders("SENDTO")
+        file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(file_name, 'r')
+        json_dict = json.load(json_file)    
+    except Exception as e:
+        eg.popup_error(
+                "設定ファイル{}が読めません".format(file_name),
+                "wasureji_input")
+        sys.exit(-1)
+    input_ = wasureji_input(
+            json_dict["host"], json_dict["port"])
     input_.start(file_name)
     sys.exit(0)

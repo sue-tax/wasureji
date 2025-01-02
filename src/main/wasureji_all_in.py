@@ -4,15 +4,16 @@ Created on 2024/12/14
 @author: sue-t
 '''
 
-from main import PORT
 from main.sequence import Sequence
 
 import datetime
 from dateutil.relativedelta import relativedelta
+import os
 import sys
-
-
+import json
+import win32com.client
 import TkEasyGUI as eg
+
 
 class wasureji_all_in(object):
     layout_all_in = [
@@ -25,8 +26,18 @@ class wasureji_all_in(object):
                 eg.Button("OK", key="-ok-")]
     ]
 
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+
     def start(self, list_file_name):
-        self.seq = Sequence(PORT)
+        # self.seq = Sequence(PORT)
+        self.seq = Sequence(self.host, self.port)
+        str_msg = self.seq.ping()
+        if str_msg != None:
+            eg.popup_error(str_msg,
+                    "サーバーが起動していない")
+            return -1
         list_in_origin = self.seq.send_ask_in_origin()
         list_in_by = self.seq.send_ask_in_by()
         
@@ -74,10 +85,21 @@ class wasureji_all_in(object):
         self.window.close()
 
 if __name__ == '__main__':
-    # file_name = str(sys.argv[1])
     list_file_name = []
     for index in range(1, len(sys.argv)):
         list_file_name.append(str(sys.argv[index]))
-    input_ = wasureji_all_in()
+    try:
+        objShell = win32com.client.Dispatch("WScript.Shell")
+        dir_name = objShell.SpecialFolders("SENDTO")
+        file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(file_name, 'r')
+        json_dict = json.load(json_file)    
+    except Exception as e:
+        eg.popup_error(
+                "設定ファイル{}が読めません".format(file_name),
+                "wasureji_all_in")
+        sys.exit(-1)
+    input_ = wasureji_all_in(
+            json_dict["host"], json_dict["port"])
     input_.start(list_file_name)
     sys.exit(0)

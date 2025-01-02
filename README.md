@@ -16,9 +16,9 @@
 
 事前に起動しておきます。
 
-そのフォルダにwasureji.dbファイルが作られます。
+~~そのフォルダにwasureji.dbファイルが作られます。~~
 
-各プログラムの通信用に、50054番のポートを使っています。
+~~各プログラムの通信用に、50054番のポートを使っています。~~
 
 ### wasureji_input.exe
 
@@ -33,6 +33,16 @@
 　C:\Users\xxxxxxx\AppData\Roaming\Microsoft\Windows\SendToのようなフォルダ名で、プリンタのショートカットなどが入っています。
 
 　そのフォルダにwasureji_input.exeファイルをコピーしてください。
+
+### wasureji.json
+
+設定用のファイルです。
+
+「SendTo」用のフォルダにコピーします。
+
+通信用のポート番号やデータベース名を指定します。
+
+支障がなければ、変更は不要です。
 
 ### wasureji_all_in.exe
 
@@ -142,7 +152,9 @@ SQL文を入力して、「実行」ボタンで実行します。
 
 検索結果は、「Excel」ボタンでExcelファイルに書き込みます。
 
-Excelファイルは、wasureji_utility.exeをインストールしたフォルダに、`wasureji.xlsx`や`wasureji_2.xlsx`のようなファイル名で保存されます。
+~~Excelファイルは、wasureji_utility.exeをインストールしたフォルダに、`wasureji.xlsx`や`wasureji_2.xlsx`のようなファイル名で保存されます。~~
+
+Excelファイル・シートは、wasureji.jsonでフォルダ（"directory"）、ファイル名（"excel_file"）、シート名（"excel_sheet"）を指定できます。
 
 「再読込」ボタンで、コンボボックスの候補を更新します。
 

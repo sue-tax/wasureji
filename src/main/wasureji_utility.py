@@ -3,12 +3,15 @@ Created on 2024/12/14
 @author: sue-t
 '''
 
-from main import PORT
 from main.sequence import Sequence
 
 import openpyxl
-import glob
+# import glob
+import os
 import sys
+import json
+import win32com.client
+import TkEasyGUI as eg
 
 '''
 検索
@@ -16,9 +19,6 @@ select base.document, input.by, output.delivery from base
 CROSS JOIN input ON base.file=input.file
 CROSS JOIN output ON base.file=output.file
 '''
-
-import TkEasyGUI as eg
-
 
 # TODO Excel出力
 
@@ -245,9 +245,22 @@ class wasureji_utility(object):
         # self.window["-inp_update_outdelivery-"].set_values(list_out_delivery)
         # self.window["-inp_update_outby-"].set_values(list_out_by)
 
-    def start(self):
-        self.seq = Sequence(PORT)
+    def __init__(self, host, port, directory,
+            excel_file, excel_sheet):
+        self.host = host
+        self.port = port
+        self.directory = directory
+        self.excel_file = excel_file
+        self.excel_sheet = excel_sheet
 
+    def start(self, list_file_name):
+        # self.seq = Sequence(PORT)
+        self.seq = Sequence(self.host, self.port)
+        str_msg = self.seq.ping()
+        if str_msg != None:
+            eg.popup_error(str_msg,
+                    "サーバーが起動していない")
+            return -1
         self.window = eg.Window("wasurejiユーティリティ",
                 self.layout_utility)
         self.window["-result-"].set_readonly(True)
@@ -314,20 +327,23 @@ class wasureji_utility(object):
             return
         str_ = str_result[1:-1]
         
-        excel_trunc = "wasureji"
-        excel_file_name = "wasureji.xlsx"
-        num_file = 2
-        files = glob.glob("*.xlsx")
-        while excel_file_name in files:
-            # excel_trunc += "_"
-            excel_file_name = excel_trunc + "_" + str(num_file) + ".xlsx"
-            num_file += 1
+        # excel_trunc = "wasureji"
+        # excel_file_name = "wasureji.xlsx"
+        # num_file = 2
+        # files = glob.glob("*.xlsx")
+        # while excel_file_name in files:
+        #     # excel_trunc += "_"
+        #     excel_file_name = excel_trunc + "_" + str(num_file) + ".xlsx"
+        #     num_file += 1
+        excel_file_name = os.path.join(
+                self.directory, self.excel_file)
         create_file = openpyxl.Workbook()
         create_file.save(excel_file_name)
 
         excel_file = openpyxl.load_workbook(excel_file_name)
         sheet_list = excel_file.sheetnames
-        sheet_name = 'sheet_wasureji'
+        # sheet_name = 'sheet_wasureji'
+        sheet_name = self.excel_sheet
         if sheet_name in sheet_list:
             pass
         else:
@@ -497,6 +513,21 @@ class wasureji_utility(object):
         return str_where
 
 if __name__ == '__main__':
-    ut_ = wasureji_utility()
+    try:
+        objShell = win32com.client.Dispatch("WScript.Shell")
+        dir_name = objShell.SpecialFolders("SENDTO")
+        file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(file_name, 'r')
+        json_dict = json.load(json_file)    
+    except Exception as e:
+        eg.popup_error(
+                "設定ファイル{}が読めません".format(file_name),
+                "wasureji_utility")
+        sys.exit(-1)
+    ut_ = wasureji_utility(
+            json_dict["host"], json_dict["port"],
+            json_dict["directory"],
+            json_dict["excel_file"],
+            json_dict["excel_sheet"])
     ut_.start()
     sys.exit(0)

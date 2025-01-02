@@ -40,7 +40,15 @@ class WasurejiHandler(socketserver.BaseRequestHandler):
         WasurejiHandler.server = wasureji_server
         # print(socket.gethostname())
         # HPENVY
-        server_ip = socket.gethostbyname(socket.gethostname())
+        # if host == None:
+        #     host_name = socket.gethostname()
+        # else:
+        #     host_name = host
+
+        # server_ip = socket.gethostbyname(socket.gethostname())
+        server_ip = "0.0.0.0"
+        
+        # server_ip = socket.gethostbyname(host_name)
         # print(server_ip)
         # 192.168.1.17
         try:

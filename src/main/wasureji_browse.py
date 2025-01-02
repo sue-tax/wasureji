@@ -5,18 +5,18 @@ Created on 2024/12/22
 @author: sue-t
 '''
 
-from main import PORT
 from main.sequence import Sequence
 
 import os
 import sys
+import json
+import win32com.client
+import TkEasyGUI as eg
 
 
 '''
 TODO　削除
 '''
-
-import TkEasyGUI as eg
 
 class wasureji_browse(object):
     layout_browse = [
@@ -106,9 +106,18 @@ class wasureji_browse(object):
         os.startfile(file_name)
         return True
 
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+
     def start(self, file_name):
-        self.seq = Sequence(PORT)
-    
+        # self.seq = Sequence(PORT)
+        self.seq = Sequence(self.host, self.port)
+        str_msg = self.seq.ping()
+        if str_msg != None:
+            eg.popup_error(str_msg,
+                    "サーバーが起動していない")
+            return -1
         list_base = self.seq.send_ask_file(file_name)
         # print(list_base)
         if list_base == None:
@@ -250,6 +259,18 @@ class wasureji_browse(object):
 if __name__ == '__main__':
     file_name = str(sys.argv[1])
     # file_name = str("C:\\Users\\sue-t\\Desktop\\0_印刷先\\SVF Print_20241114_0833.pdf")
-    input_ = wasureji_browse()
+    try:
+        objShell = win32com.client.Dispatch("WScript.Shell")
+        dir_name = objShell.SpecialFolders("SENDTO")
+        file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(file_name, 'r')
+        json_dict = json.load(json_file)    
+    except Exception as e:
+        eg.popup_error(
+                "設定ファイル{}が読めません".format(file_name),
+                "wasureji_browse")
+        sys.exit(-1)
+    input_ = wasureji_browse(
+            json_dict["host"], json_dict["port"])
     input_.start(file_name)
     sys.exit(0)
