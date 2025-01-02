@@ -4,7 +4,7 @@ Created on 2024/12/14
 @author: sue-t
 '''
 
-from main import PORT
+# from main import PORT
 from main.sequence import Sequence
 
 import datetime
