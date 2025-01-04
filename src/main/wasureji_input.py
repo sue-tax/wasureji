@@ -167,7 +167,7 @@ class wasureji_input(object):
             self.out_all += 1
             # TODO DBをここでしない
             self.seq.send_insert_out(
-                   file_name,
+                   self.file_name,
                    str_date, str_delivery, str_by)
             self.window["-output_all-"]. \
                     set_text(str(self.out_all))
@@ -176,10 +176,10 @@ class wasureji_input(object):
             self.list_out[self.out_index-1] = \
                         [str_date, str_delivery, str_by]
             # TODO DBをここでしない
-            self.seq.send_delete_out(file_name)
+            self.seq.send_delete_out(self.file_name)
             for out_ in self.list_out:
                 self.seq.send_insert_out(
-                       file_name,
+                       self.file_name,
                        out_[0], out_[1], out_[2])
         self.window["-output_append-"].set_disabled(False)
         self.window["-output_change-"].set_disabled(False)
@@ -238,6 +238,7 @@ class wasureji_input(object):
         self.port = port
 
     def start(self, file_name):
+        self.file_name = file_name
         # self.seq = Sequence(PORT)
         self.seq = Sequence(self.host, self.port)
         str_msg = self.seq.ping()
@@ -257,7 +258,7 @@ class wasureji_input(object):
         d_yesterday = d_today + relativedelta(days=-1)
         list_date = [d_today.strftime('%Y%m%d'), d_yesterday.strftime('%Y%m%d')]
     
-        list_base = self.seq.send_ask_file(file_name)
+        list_base = self.seq.send_ask_file(self.file_name)
         # print(list_base)
         flag_exist_base = True 
         if list_base == None:
@@ -266,7 +267,7 @@ class wasureji_input(object):
         self.set_doc = list_base[0]
         self.set_cust = list_base[1]
         self.set_sect = list_base[2]
-        list_in = self.seq.send_ask_in(file_name)
+        list_in = self.seq.send_ask_in(self.file_name)
         # print(list_in)
         flag_exist_in = True
         if list_in == None:
@@ -276,7 +277,7 @@ class wasureji_input(object):
         set_in_origin = list_in[1]
         set_in_by = list_in[2]
         
-        self.list_out = self.seq.send_ask_out(file_name)
+        self.list_out = self.seq.send_ask_out(self.file_name)
         # print(self.list_out)
         # flag_exist_out = True
         if self.list_out == None:
@@ -294,10 +295,10 @@ class wasureji_input(object):
     
         self.window = eg.Window("wasureji_input",
                 self.layout_input)
-        base_name = os.path.basename(file_name)
+        base_name = os.path.basename(self.file_name)
         self.window["-file-"].update(text=base_name,
                 readonly=True) #, text_align="right")
-        self.window["-file-"].set_cursor_pos(len(file_name)-1)
+        self.window["-file-"].set_cursor_pos(len(self.file_name)-1)
         self.window["-document-"].set_values(list_doc)
         self.window["-document-"].set_value(self.set_doc)
         self.window["-customer-"].set_values(list_cust)
@@ -375,13 +376,13 @@ class wasureji_input(object):
                             or (self.set_cust != get_cust) \
                             or (self.set_sect != get_sect)):
                         self.seq.send_replace_file(
-                                file_name,
+                                self.file_name,
                                 get_doc, get_cust, get_sect,
                                 self.set_doc, self.set_cust,
                                 self.set_sect)
                 else:
                     self.seq.send_insert_file(
-                            file_name,
+                            self.file_name,
                             get_doc, get_cust, get_sect)
                 
                 pyperclip.copy(get_sect)
@@ -390,13 +391,13 @@ class wasureji_input(object):
                 
                 if flag_exist_in:
                     self.seq.send_replace_in(
-                            file_name,
+                            self.file_name,
                             self.window["-input_date-"].get(),
                             self.window["-input_origin-"].get(),
                             self.window["-input_by-"].get())
                 else:
                     self.seq.send_insert_in(
-                            file_name,
+                            self.file_name,
                             self.window["-input_date-"].get(),
                             self.window["-input_origin-"].get(),
                             self.window["-input_by-"].get())
@@ -412,20 +413,21 @@ class wasureji_input(object):
         self.window.close()
 
 if __name__ == '__main__':
-    file_name = str(sys.argv[1])
+    arg_file_name = str(sys.argv[1])
     # file_name = str("c:/dfafafa/adfaafafa/afafafa/abcd.pdf")
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")
         dir_name = objShell.SpecialFolders("SENDTO")
-        file_name = os.path.join(dir_name, 'wasureji.json')
-        json_file = open(file_name, 'r')
+        json_file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(json_file_name, 'r')
         json_dict = json.load(json_file)    
     except Exception as e:
         eg.popup_error(
-                "設定ファイル{}が読めません".format(file_name),
+                "設定ファイル{}が読めません".format(
+                        json_file_name),
                 "wasureji_input")
         sys.exit(-1)
     input_ = wasureji_input(
             json_dict["host"], json_dict["port"])
-    input_.start(file_name)
+    input_.start(arg_file_name)
     sys.exit(0)

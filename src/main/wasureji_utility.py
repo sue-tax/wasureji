@@ -253,7 +253,7 @@ class wasureji_utility(object):
         self.excel_file = excel_file
         self.excel_sheet = excel_sheet
 
-    def start(self, list_file_name):
+    def start(self):
         # self.seq = Sequence(PORT)
         self.seq = Sequence(self.host, self.port)
         str_msg = self.seq.ping()
@@ -516,12 +516,13 @@ if __name__ == '__main__':
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")
         dir_name = objShell.SpecialFolders("SENDTO")
-        file_name = os.path.join(dir_name, 'wasureji.json')
-        json_file = open(file_name, 'r')
+        json_file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(json_file_name, 'r')
         json_dict = json.load(json_file)    
     except Exception as e:
         eg.popup_error(
-                "設定ファイル{}が読めません".format(file_name),
+                "設定ファイル{}が読めません".format(
+                        json_file_name),
                 "wasureji_utility")
         sys.exit(-1)
     ut_ = wasureji_utility(

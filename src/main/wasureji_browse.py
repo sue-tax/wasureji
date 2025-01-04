@@ -257,20 +257,21 @@ class wasureji_browse(object):
         self.window.close()
 
 if __name__ == '__main__':
-    file_name = str(sys.argv[1])
+    arg_file_name = str(sys.argv[1])
     # file_name = str("C:\\Users\\sue-t\\Desktop\\0_印刷先\\SVF Print_20241114_0833.pdf")
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")
         dir_name = objShell.SpecialFolders("SENDTO")
-        file_name = os.path.join(dir_name, 'wasureji.json')
-        json_file = open(file_name, 'r')
+        json_file_name = os.path.join(dir_name, 'wasureji.json')
+        json_file = open(json_file_name, 'r')
         json_dict = json.load(json_file)    
     except Exception as e:
         eg.popup_error(
-                "設定ファイル{}が読めません".format(file_name),
+                "設定ファイル{}が読めません".format(
+                        json_file_name),
                 "wasureji_browse")
         sys.exit(-1)
     input_ = wasureji_browse(
             json_dict["host"], json_dict["port"])
-    input_.start(file_name)
+    input_.start(arg_file_name)
     sys.exit(0)
