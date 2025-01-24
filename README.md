@@ -154,7 +154,9 @@ SQL文を入力して、「実行」ボタンで実行します。
 
 ~~Excelファイルは、wasureji_utility.exeをインストールしたフォルダに、`wasureji.xlsx`や`wasureji_2.xlsx`のようなファイル名で保存されます。~~
 
-Excelファイル・シートは、wasureji.jsonでフォルダ（"directory"）、ファイル名（"excel_file"）、シート名（"excel_sheet"）を指定できます。
+~~Excelファイル・シートは、wasureji.jsonでフォルダ（"directory"）、ファイル名（"excel_file"）、シート名（"excel_sheet"）を指定できます。~~
+
+Excelファイルは、wasureji.jsonでフォルダ（"directory"）、ファイル名（"excel_file"）を指定できます。ファイル名は、指定されたファイル名に日時を追加したものになります。
 
 「再読込」ボタンで、コンボボックスの候補を更新します。
 
