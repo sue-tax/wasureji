@@ -7,6 +7,7 @@ from main.sequence import Sequence
 
 import openpyxl
 # import glob
+import datetime
 import os
 import sys
 import json
@@ -246,15 +247,14 @@ class wasureji_utility(object):
         # self.window["-inp_update_outby-"].set_values(list_out_by)
 
     def __init__(self, host, port, directory,
-            excel_file, excel_sheet):
+            excel_file): #, excel_sheet):
         self.host = host
         self.port = port
         self.directory = directory
         self.excel_file = excel_file
-        self.excel_sheet = excel_sheet
+        # self.excel_sheet = excel_sheet
 
     def start(self):
-        # self.seq = Sequence(PORT)
         self.seq = Sequence(self.host, self.port)
         str_msg = self.seq.ping()
         if str_msg != None:
@@ -268,7 +268,6 @@ class wasureji_utility(object):
         # self.window["-sql_update-"].set_disabled(True)
         # self.window["-sql_delete-"].set_disabled(True)
         self.combo_set()
-
         while True:
             event, _values = self.window.read()
             if event == "-kill-":
@@ -335,21 +334,28 @@ class wasureji_utility(object):
         #     # excel_trunc += "_"
         #     excel_file_name = excel_trunc + "_" + str(num_file) + ".xlsx"
         #     num_file += 1
+        
+        # base_file = os.path.splitext(self.excel_file)
+        now = datetime.datetime.now()
+        file_name = self.excel_file + '_' \
+                + now.strftime('%Y%m%d%H%M%S') + '.xlsx'
         excel_file_name = os.path.join(
-                self.directory, self.excel_file)
+                self.directory, file_name)
+        # print(excel_file_name)
         create_file = openpyxl.Workbook()
         create_file.save(excel_file_name)
 
         excel_file = openpyxl.load_workbook(excel_file_name)
-        sheet_list = excel_file.sheetnames
+        # sheet_list = excel_file.sheetnames
         # sheet_name = 'sheet_wasureji'
-        sheet_name = self.excel_sheet
-        if sheet_name in sheet_list:
-            pass
-        else:
-            excel_file.create_sheet(title=sheet_name)
-        sheet = excel_file[sheet_name]
-        excel_file.active = sheet
+        # sheet_name = self.excel_sheet
+        # if sheet_name in sheet_list:
+        #     pass
+        # else:
+        #     excel_file.create_sheet(title=sheet_name)
+        # sheet = excel_file[sheet_name]
+        # excel_file.active = sheet
+        sheet = excel_file.active
         
         str_sql = self.window["-sql-"].get()
         sheet.cell(row=1, column=1, value=str_sql)
@@ -361,7 +367,7 @@ class wasureji_utility(object):
             for x, cell_ in enumerate(list_):
                 sheet.cell(row=start_row + y,
                            column=start_col + x,
-                           value=cell_)
+                           value=cell_[1:])
         excel_file.save(excel_file_name)
         
     def find(self):
@@ -518,17 +524,17 @@ if __name__ == '__main__':
         dir_name = objShell.SpecialFolders("SENDTO")
         json_file_name = os.path.join(dir_name, 'wasureji.json')
         json_file = open(json_file_name, 'r')
-        json_dict = json.load(json_file)    
+        json_dict = json.load(json_file)
     except Exception as e:
         eg.popup_error(
                 "設定ファイル{}が読めません".format(
                         json_file_name),
                 "wasureji_utility")
         sys.exit(-1)
-    ut_ = wasureji_utility(
+    ut = wasureji_utility(
             json_dict["host"], json_dict["port"],
             json_dict["directory"],
-            json_dict["excel_file"],
-            json_dict["excel_sheet"])
-    ut_.start()
+            json_dict["excel_file"])
+            # json_dict["excel_sheet"])
+    ut.start()
     sys.exit(0)

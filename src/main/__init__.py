@@ -1,4 +1,7 @@
-__VERSION__ = '0.11'
+# __VERSION__ = '0.11'
+# __VERSION__ = '0.12'    # ファイル監視機能
+# __VERSION__ = '0.13'    # 複数ファイルの右クリック対応
+__VERSION__ = '0.14'    # Excelファイル名、シート名変更　空白削除
 
 # PORT = 50054
 #
@@ -28,6 +31,9 @@ ASK_FILE = "file?"
 INS_FILE = "file>"
 REP_FILE = "file$"
 DEL_FILE = "file<"
+
+EXIST_DEL = "exist<"
+EXIST_REN = "exist$"
 
 ASK_DOC  = "doc ?"
 ASK_CUST = "cust?"

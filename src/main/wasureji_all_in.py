@@ -31,7 +31,7 @@ class wasureji_all_in(object):
         self.port = port
 
     def start(self, list_file_name):
-        # self.seq = Sequence(PORT)
+        # print(list_file_name)
         self.seq = Sequence(self.host, self.port)
         str_msg = self.seq.ping()
         if str_msg != None:
@@ -58,22 +58,38 @@ class wasureji_all_in(object):
         while True:
             event, _values = self.window.read()
             if event == "-ok-":
-                str_date = self.window["-input_date-"].get()
-                str_origin = self.window["-input_origin-"].get()
-                str_by = self.window["-input_by-"].get()
-                for str_file_name in list_file_name:
-                    rcv = self.seq.send_ask_file(str_file_name)
-                    if rcv == None:
-                        self.seq.send_insert_file(
-                                str_file_name,
-                                "", "","")
-                    rcv = self.seq.send_ask_in(str_file_name)
-                    if rcv == None:
-                        self.seq.send_insert_in(str_file_name,
-                                str_date, str_origin, str_by)
-                    else:
-                        self.seq.send_replace_in(str_file_name,
-                                str_date, str_origin, str_by)
+                try:
+                    str_date = self.window["-input_date-"].get()
+                    str_origin = self.window["-input_origin-"].get()
+                    str_by = self.window["-input_by-"].get()
+                    for str_file_name in list_file_name:
+                        print(str_file_name)
+                        # os.system("pause")
+                        rcv = self.seq.send_ask_file(str_file_name)
+                        # print(rcv)
+                        # os.system("pause")
+                        if rcv == None:
+                            self.seq.send_insert_file(
+                                    str_file_name,
+                                    "", "","")
+                        rcv = self.seq.send_ask_in(str_file_name)
+                        # print(rcv)
+                        # os.system("pause")
+                        if rcv == None:
+                            self.seq.send_insert_in(str_file_name,
+                                    str_date, str_origin, str_by)
+                        else:
+                            self.seq.send_replace_in(str_file_name,
+                                    str_date, str_origin, str_by)
+                        # os.system("pause")
+                except e:
+                    print(e)
+                    # import time
+                    # time.sleep(10000)
+                    # os.system("pause")
+                    sys.exit(-1)
+                # print("end loop")
+                # os.system("pause")
                 break
             if event == "-cancel-" or event == "WINDOW_CLOSED":
                 answer = eg.confirm(
@@ -82,11 +98,17 @@ class wasureji_all_in(object):
                 if answer:
                     break
                 continue
+        # print("before cose")
+        # os.system("pause")
         self.window.close()
 
 if __name__ == '__main__':
     list_file_name = []
+    # print(len(sys.argv))
+    # print(sys.argv)
     for index in range(1, len(sys.argv)):
+        if sys.argv[index] == "":
+            continue
         list_file_name.append(str(sys.argv[index]))
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")
@@ -102,5 +124,6 @@ if __name__ == '__main__':
         sys.exit(-1)
     input_ = wasureji_all_in(
             json_dict["host"], json_dict["port"])
+    # print(list_file_name)
     input_.start(list_file_name)
     sys.exit(0)

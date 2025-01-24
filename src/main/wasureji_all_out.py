@@ -84,6 +84,8 @@ if __name__ == '__main__':
     # file_name = str(sys.argv[1])
     list_file_name = []
     for index in range(1, len(sys.argv)):
+        if sys.argv[index] == "":
+            continue
         list_file_name.append(str(sys.argv[index]))
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")

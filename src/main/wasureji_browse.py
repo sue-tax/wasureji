@@ -20,55 +20,65 @@ TODO　削除
 
 class wasureji_browse(object):
     layout_browse = [
-        [eg.Label("ファイル名"),
-                eg.Input("", width=50, key='-file-'  ),
+        [eg.Label("ファイル名　"),
+                eg.Input("", width=100, key='-file-'  ),
                 eg.Button("表示", key="-display_file-"),
-                eg.Label("　　　　　　　　　　　　　　　　　"),
+                # eg.Label("　　　　　　　　　　　　　　　　　"),
                 # eg.Button("削除", key="-delete_file-")
                 ],
 
-        [eg.Label("書類名"), #eg.VSeparator(pad=2),# 縦区切り線 
+        [eg.Label("書類名　　"), #eg.VSeparator(pad=2),# 縦区切り線 
                 eg.Label("", key='-document-')],
-        [eg.Label("顧客名"), eg.Label("", key='-customer-')],
-        [eg.Label("区分名"), eg.Label("", key='-section-')],
+        [eg.Label("顧客名　　"), eg.Label("", key='-customer-')],
+        [eg.Label("区分名　　"), eg.Label("", key='-section-')],
     
-        [eg.Label("受取り")],
-        [eg.Label("いつ　"), eg.Label("", key="-input_date-")],
-        [eg.Label("誰から"), eg.Label("", key="-input_origin-")],
-        [eg.Label("何で　"), eg.Label("", key="-input_by-")],
+        [eg.Label("　　　")],
+
+        [eg.Label("受取り　　")],
+        [eg.Label("　いつ　　"), eg.Label("", key="-input_date-")],
+        [eg.Label("　誰から　"), eg.Label("", key="-input_origin-")],
+        [eg.Label("　何で　　"), eg.Label("", key="-input_by-")],
+
+        [eg.Label("　　　")],
         
-        [eg.Label("引渡し")],
-        [eg.Label("いつ　"), eg.Label("", key="-output_date-")],
-        [eg.Label("誰へ　"), eg.Label("", key="-output_delivery-")],
-        [eg.Label("何で　"), eg.Label("", key="-output_by-")],
+        [eg.Label("引渡し　　")],
+        [eg.Label("　いつ　　"), eg.Label("", key="-output_date-")],
+        [eg.Label("　誰へ　　"), eg.Label("", key="-output_delivery-")],
+        [eg.Label("　何で　　"), eg.Label("", key="-output_by-")],
         [eg.Button("≪", key="-output_left-"),
                 eg.Label("", width=2, key="-output_index-"),
                 eg.Label("／"),
                 eg.Label("", width=2, key="-output_all-"),
                 eg.Button("≫", key="-output_right-")],
         
-        [eg.Label("最新"),
-                eg.Input("", width=50, key="-latest-"),
+        [eg.Label("　　　")],
+        
+        [eg.Label("最新　　　"),
+                eg.Input("", width=100, key="-latest-"),
                 eg.Button("表示", key="-display_latest-"),
-                eg.Label("　　　　"),
+                # eg.Label("　　　　"),
                 # eg.Button("削除", key="-delete_latest-"),
                 ],
         [eg.Label("履歴"),
                 eg.Label("　　　　"),
                 # eg.Button("Excel", key="-excel_history-"),
                 eg.Label("　　　 　　　　　　　　　　　　　"),
+                eg.Label("　            　　　"),
                 eg.Button("表示", key="-display_history-"),
                 eg.Label("　　　　"),
                 # eg.Button("削除", key="-delete_history-"),
                 ],
-        [eg.Listbox( 
+        [eg.Label("　　　　　"),
+            eg.Listbox( 
             # values=get_program_files(), 
-            size=(50, 5), 
+            size=(100, 5), 
             key="-files-", # 要素の参照キー
             # enable_events=True, # アクションがあれば実行する引数
         )],
  
-        [eg.Label("　　　　　　　　　　　　　　　　　　　　"),
+        [eg.Label("　　　　　　　　　　　　　　　　　　"),
+                eg.Label("　　　　　　　　　　　　　　　　　　"),
+                eg.Label("　　　　　　　　　　　　　　　　　　"),
                 eg.Button("OK", key="-ok-")]
     ]
 
@@ -133,6 +143,8 @@ class wasureji_browse(object):
         set_in_origin = list_in[1]
         set_in_by = list_in[2]
         
+        # print(file_name)
+        # os.system("pause")
         self.list_out = self.seq.send_ask_out(file_name)
         # print(self.list_out)
         if self.list_out == None:
@@ -145,7 +157,10 @@ class wasureji_browse(object):
         set_out_date = self.list_out[0][0]
         set_out_delivery = self.list_out[0][1]
         set_out_by = self.list_out[0][2]
-    
+        # print(set_out_date)
+        # print(set_out_delivery)
+        # print(set_out_by)
+
         if (self.set_doc != "") and (self.set_cust != "") \
                 and (self.set_sect != ""):
             list_history = self.seq.send_ask_history(
@@ -258,7 +273,7 @@ class wasureji_browse(object):
 
 if __name__ == '__main__':
     arg_file_name = str(sys.argv[1])
-    # file_name = str("C:\\Users\\sue-t\\Desktop\\0_印刷先\\SVF Print_20241114_0833.pdf")
+    # file_name = str("C:\\Users\\20241114_0833.pdf")
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")
         dir_name = objShell.SpecialFolders("SENDTO")
@@ -273,5 +288,6 @@ if __name__ == '__main__':
         sys.exit(-1)
     input_ = wasureji_browse(
             json_dict["host"], json_dict["port"])
+    # print("*"+arg_file_name+"*")
     input_.start(arg_file_name)
     sys.exit(0)

@@ -33,6 +33,7 @@ class client(object):
                 socket.SOCK_STREAM) as sock:
             try:
                 sock.connect((self.server_ip, self.port))
+                # print(str_msg)
                 data_msg = bytes(str_msg, 'utf-8')
                 sock.sendall(pack('!I', len(data_msg)))
                 sock.sendall(data_msg)
@@ -46,7 +47,9 @@ class client(object):
                 return f"error_socket:{e}"
             finally:
                 sock.close()
-        return received.decode(encoding='utf-8')
+        str_rcv = received.decode(encoding='utf-8')
+        # print(str_rcv)
+        return str_rcv
 
 if __name__ == '__main__':
     pass

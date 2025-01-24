@@ -20,26 +20,11 @@ import TkEasyGUI as eg
 
 '''
 作成予定の他のクライアント
-wasureji_confirm
-　表示　済
+wasureji_browse
 　削除　未
-wasureji_history confirmとセット
-　指定したファイルの最新や履歴を表示 済
-　クリックでpdfソフト等が起動　未
 ユーティリティ
-　KILL 済
-　検索　済
 　検索後、削除・置換　保留
-　SQL 検索、その他　済
-'''
-
-'''
-before,latestの処理 済
-'''
-
-'''
-host,port,dbの指定
-ネット間手続
+ネット間手続 うまく、稼働せず
 '''
 
 class wasureji_input(object):
@@ -239,7 +224,6 @@ class wasureji_input(object):
 
     def start(self, file_name):
         self.file_name = file_name
-        # self.seq = Sequence(PORT)
         self.seq = Sequence(self.host, self.port)
         str_msg = self.seq.ping()
         if str_msg != None:
@@ -414,7 +398,7 @@ class wasureji_input(object):
 
 if __name__ == '__main__':
     arg_file_name = str(sys.argv[1])
-    # file_name = str("c:/dfafafa/adfaafafa/afafafa/abcd.pdf")
+    # arg_file_name = str("c:/dfafafa/adfaafafa/afafafa/abcd.pdf")
     try:
         objShell = win32com.client.Dispatch("WScript.Shell")
         dir_name = objShell.SpecialFolders("SENDTO")
@@ -429,5 +413,6 @@ if __name__ == '__main__':
         sys.exit(-1)
     input_ = wasureji_input(
             json_dict["host"], json_dict["port"])
+    # print("*"+arg_file_name+"*")
     input_.start(arg_file_name)
     sys.exit(0)

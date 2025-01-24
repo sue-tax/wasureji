@@ -126,7 +126,7 @@ class WasurejiDB(object):
         rv = self.reset_history(file,
                 old_document, old_customer, old_section)
         if (rv == None):
-            (msg, old_latest) = self.set_history(file,
+            (_msg, old_latest) = self.set_history(file,
                     document, customer, section)
             # print(msg)
             # print(old_latest)
@@ -148,6 +148,23 @@ class WasurejiDB(object):
         except sqlite3.Error as e:
             return f"error_db:{e}"
         return "ok"
+
+
+    def exist_file(self, file_name):
+        # 削除も名前変更も共用
+        str_sql = r'SELECT file' \
+                ' FROM base WHERE file = "{}"'. \
+                format(file_name)
+        # print(str_sql)
+        try:
+            self.cur.execute(str_sql)
+        except sqlite3.Error as e:
+            print(f"error_db: {e}")
+            exit(-1)
+        list_base = self.cur.fetchall()
+        # print(list_base)
+        return list_base
+
 
     def set_history(self, file, document, customer, section):
         str_sql_select = r'SELECT file, before, latest ' \

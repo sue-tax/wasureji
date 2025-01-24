@@ -3,6 +3,6 @@
     "port" : 50054,
     "database" : "wasureji.db",
     "directory" : ".",
-    "excel_file" : "wasureji.xlsx",
-    "excel_sheet" : "wasureji"
+    "excel_file" : "wasureji",
+    "watchdog_directory" : "."
 }

@@ -6,6 +6,7 @@ Created on 2024/12/10
 
 from main import PING,KILL,SQL,COMMIT,ROLLBACK, \
         ASK_FILE,INS_FILE,REP_FILE, \
+        EXIST_DEL, EXIST_REN, \
         ASK_DOC,ASK_CUST,ASK_SECT, \
         ASK_IN,INS_IN,REP_IN, \
         ASK_OUT,INS_OUT,REP_OUT,DEL_OUT, \
@@ -13,6 +14,12 @@ from main import PING,KILL,SQL,COMMIT,ROLLBACK, \
         ASK_OUT_DELIV,ASK_OUT_BY, \
         ASK_HISTORY
 from com.client import client
+
+# import threading
+import os
+
+import TkEasyGUI as eg
+
 
 class Sequence(object):
     def __init__(self, host, port):
@@ -29,8 +36,8 @@ class Sequence(object):
         return None
 
     def listen(self, str_msg, database):
-        if str_msg.startswith(PING):
-            return "reply"
+        # if str_msg.startswith(PING):
+        #     return "reply"
 
         if str_msg.startswith(SQL):
             str_result = database.execute_sql(
@@ -74,6 +81,44 @@ class Sequence(object):
                     list_str[5][1:-1],
                     list_str[6][1:-1])
             return str_msg
+        
+        if str_msg.startswith(EXIST_DEL):
+            # 削除も名前変更も共用
+            list_base = database.exist_file(
+                    str_msg[len(EXIST_DEL):])
+            # print("listen EXIST_DEL")
+            # print(list_base)
+            # print(threading.current_thread().getName())
+            if len(list_base) == 0:
+                return("[]")
+            ret_msg = r'["{}"]'. \
+                    format(list_base[0][0])
+            warn_msg = "削除または移動した" \
+                    "ファイル{}は、" \
+                    "wasurejiデータベースに登録されています". \
+                    format(list_base[0][0])
+            # ここで表示は、美しくはないが
+            eg.popup_warning(warn_msg, "wasureji")
+            return str_msg
+
+        if str_msg.startswith(EXIST_REN):
+            # 削除も名前変更も共用
+            list_base = database.exist_file(
+                    str_msg[len(EXIST_REN):])
+            # print("listen EXIST_REN")
+            # print(list_base)
+            # print(threading.current_thread().getName())
+            if len(list_base) == 0:
+                return("[]")
+            ret_msg = r'["{}"]'. \
+                    format(list_base[0][0])
+            warn_msg = "名前変更した" \
+                    "ファイル{}は、" \
+                    "wasurejiデータベースに登録されています". \
+                    format(list_base[0][0])
+            # ここで表示は、美しくはないが
+            eg.popup_warning(warn_msg, "wasureji")
+            return str_msg
 
         if str_msg.startswith(ASK_DOC):
             list_doc = database.select_document()
@@ -81,7 +126,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_doc:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             # ret_msg = r'["' + r',"'.join(list_doc[0]) + r'"]'
             return ret_msg
@@ -91,7 +136,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_cust:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
         if str_msg.startswith(ASK_SECT):
@@ -100,7 +145,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_sect:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
@@ -134,7 +179,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_origin:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
         if str_msg.startswith(ASK_IN_BY):
@@ -143,7 +188,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_by:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
@@ -186,7 +231,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_delivery:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             # print(ret_msg)
             return ret_msg
@@ -196,7 +241,7 @@ class Sequence(object):
                 return("[]")
             list_ = []
             for atom in list_by:
-                list_.append(atom[0])
+                list_.append(str(atom[0]))
             ret_msg = r'["' + r'","'.join(list_) + r'"]'
             return ret_msg
 
@@ -288,6 +333,27 @@ class Sequence(object):
         str_rcv = client_.send(str_send)
         return str_rcv
 
+
+    def send_exist_del(self, str_file_name):
+        client_ = client(self.host, self.port)
+        str_send = "{}{}".format(EXIST_DEL, str_file_name)
+        str_rcv = client_.send(str_send)
+        # print(str_rcv)
+        if str_rcv == "[]":
+            return False
+        else:
+            return True
+
+    def send_exist_ren(self, str_file_name):
+        client_ = client(self.host, self.port)
+        str_send = "{}{}".format(EXIST_REN, str_file_name)
+        str_rcv = client_.send(str_send)
+        # print(str_rcv)
+        if str_rcv == "[]":
+            return False
+        else:
+            return True
+
     def send_ask_document(self):
         client_ = client(self.host, self.port)
         str_send = ASK_DOC
@@ -321,6 +387,7 @@ class Sequence(object):
         str_send = ASK_SECT
         # str_rcv = client_.send(self.port, str_send)
         str_rcv = client_.send(str_send)
+        # print(str_rcv)
         if str_rcv == "[]":
             return None
         else:
@@ -328,6 +395,7 @@ class Sequence(object):
             list_atom = []
             for atom in list_str:
                 list_atom.append(atom[1:-1])
+            # print(list_atom)
             return list_atom
 
 
@@ -396,9 +464,12 @@ class Sequence(object):
 
     def send_ask_out(self, str_file_name):
         client_ = client(self.host, self.port)
+        # print("*"+str_file_name+"*")
         str_send = "{}{}".format(ASK_OUT, str_file_name)
         # str_rcv = client_.send(self.port, str_send)
         str_rcv = client_.send(str_send)
+        # print(str_rcv)
+        # os.system("pause")
         if str_rcv == "[]":
             return None
         else:
@@ -409,6 +480,8 @@ class Sequence(object):
                 list_rcv.append([ atom_[0][1:-1],
                         atom_[1][1:-1],
                         atom_[2][1:-1] ])
+            # print(list_rcv)
+            # os.system("pause")
             return list_rcv
 
     def send_insert_out(self, str_file_name,

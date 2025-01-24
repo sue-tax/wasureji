@@ -39,7 +39,7 @@ class WasurejiHandler(socketserver.BaseRequestHandler):
     def start_server(self, port, wasureji_server):
         WasurejiHandler.server = wasureji_server
         # print(socket.gethostname())
-        # HPENVY
+        # HPxxxxx
         # if host == None:
         #     host_name = socket.gethostname()
         # else:
@@ -59,5 +59,6 @@ class WasurejiHandler(socketserver.BaseRequestHandler):
             TkEasyGUI.popup(f"error_com:{e}", "ERROR")
 
 if __name__ == '__main__':
-    from main import PORT
+    # from main import PORT
+    PORT = 50054
     WasurejiHandler.start_server(PORT)
