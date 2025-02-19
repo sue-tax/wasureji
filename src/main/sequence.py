@@ -99,6 +99,7 @@ class Sequence(object):
                     format(list_base[0][0])
             # ここで表示は、美しくはないが
             eg.popup_warning(warn_msg, "wasureji")
+            print('\007')
             return str_msg
 
         if str_msg.startswith(EXIST_REN):
@@ -118,6 +119,7 @@ class Sequence(object):
                     format(list_base[0][0])
             # ここで表示は、美しくはないが
             eg.popup_warning(warn_msg, "wasureji")
+            print('\007')
             return str_msg
 
         if str_msg.startswith(ASK_DOC):
